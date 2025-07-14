@@ -1,5 +1,11 @@
 # kotakin
 
+## Development
+
+```sh
+go run cmd/kotakin/main.go
+```
+
 ## API
 
 /api

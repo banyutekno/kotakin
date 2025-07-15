@@ -6,6 +6,12 @@
 go run cmd/kotakin/main.go
 ```
 
+## Frontend
+
+```sh
+pnpm dev
+```
+
 ## API
 
 /api

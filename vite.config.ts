@@ -6,6 +6,13 @@ import { fileURLToPath } from 'node:url';
 const __dirname = dirname(fileURLToPath(import.meta.url));
 
 export default defineConfig({
+  server: {
+    proxy: {
+      '/api': {
+        target: 'http://localhost:3000',
+      },
+    },
+  },
   plugins: [react()],
   root: resolve(__dirname, 'web'),
 });

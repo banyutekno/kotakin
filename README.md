@@ -15,9 +15,13 @@ pnpm dev
 ## API
 
 /api
-  GET /template
+  /template
+    get
 
-  GET /box
-  POST /box
-  GET /box/:id
-  DELETE /box/:id
+  /box
+    get
+    post
+
+  /box/:id
+    get
+    delete

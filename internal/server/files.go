@@ -7,7 +7,7 @@ import (
 	"github.com/go-chi/chi/v5"
 )
 
-func ServeFiles(r *chi.Mux, root string) {
+func ServeFiles(r chi.Router, root string) {
 	fs := http.FileServer(http.Dir(root))
 
 	r.Get("/*", func(w http.ResponseWriter, r *http.Request) {

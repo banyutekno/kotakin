@@ -2,26 +2,14 @@
 
 ## Development
 
+### Backend
+
 ```sh
-go run cmd/kotakin/main.go
+pnpm dev:api
 ```
 
-## Frontend
+### Frontend
 
 ```sh
 pnpm dev
 ```
-
-## API
-
-/api
-  /template
-    get
-
-  /box
-    get
-    post
-
-  /box/:id
-    get
-    delete

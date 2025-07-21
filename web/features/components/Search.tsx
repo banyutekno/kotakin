@@ -1,4 +1,4 @@
-export default function Search() {
+export function Search() {
   return (
     <div className="input-group">
       <input className="form-control" type="text" placeholder="Search..." />

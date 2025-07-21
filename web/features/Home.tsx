@@ -1,6 +1,6 @@
 import { Link } from 'react-router-dom';
-import Search from './components/Search';
 import { useBox } from '../contexts/BoxProvider';
+import { Search } from './components/Search';
 
 export default function Home() {
   const { boxes } = useBox();

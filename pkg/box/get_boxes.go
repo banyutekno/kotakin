@@ -13,7 +13,7 @@ func GetBoxes() []*Box {
 		panic(err)
 	}
 
-	containers, err := cli.ContainerList(context.Background(), containertypes.ListOptions{})
+	containers, err := cli.ContainerList(context.Background(), containertypes.ListOptions{All: true})
 	if err != nil {
 		panic(err)
 	}

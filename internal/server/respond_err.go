@@ -7,20 +7,20 @@ import (
 )
 
 func respondErr(w http.ResponseWriter, err error) {
-	if !domain.IsDomainError(err) {
-		respondJson(w, 500, err)
+	if domain.IsNotFoundError(err) {
+		respondJson(w, 404, err)
 		return
 	}
 
-	domainErr := err.(*domain.DomainError)
-
-	status := 500
-	switch domainErr.Type {
-	case domain.ErrBadRequest:
-		status = 400
-	case domain.ErrNotFound:
-		status = 404
+	if domain.IsValidationError(err) {
+		respondJson(w, 400, err)
+		return
 	}
 
-	respondJson(w, status, domainErr)
+	if domain.IsBusinessRuleError(err) {
+		respondJson(w, 400, err)
+		return
+	}
+
+	respondJson(w, 500, err)
 }

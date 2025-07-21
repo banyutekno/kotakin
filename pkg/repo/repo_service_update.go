@@ -1,5 +1,7 @@
 package repo
 
+import "github.com/banyutekno/kotakin/pkg/git"
+
 func (s *RepoService) Update(id string) error {
 	repo, err := s.Read(id)
 	if err != nil {
@@ -10,11 +12,14 @@ func (s *RepoService) Update(id string) error {
 		return nil
 	}
 
-	// FIXME: do update
-	// repoDir, err := s.repoDir(id)
-	// if err != nil {
-	// 	return err
-	// }
+	repoDir, err := s.repoDir(id)
+	if err != nil {
+		return err
+	}
+
+	if err := git.Pull(repoDir); err != nil {
+		return err
+	}
 
 	return nil
 }

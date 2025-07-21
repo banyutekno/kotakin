@@ -6,7 +6,15 @@ import (
 	"net/http"
 )
 
+type MessageResponse struct {
+	Message string `json:"message"`
+}
+
 func respondJson(w http.ResponseWriter, status int, data interface{}) {
+	if data == nil {
+		data = &MessageResponse{"success"}
+	}
+
 	if err, ok := data.(error); ok {
 		data = map[string]string{
 			"message": err.Error(),

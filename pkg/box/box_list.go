@@ -7,15 +7,15 @@ import (
 	"github.com/docker/docker/client"
 )
 
-func GetBoxes() []*Box {
+func (s *BoxService) List() ([]*Box, error) {
 	cli, err := client.NewClientWithOpts(client.FromEnv, client.WithAPIVersionNegotiation())
 	if err != nil {
-		panic(err)
+		return nil, err
 	}
 
 	containers, err := cli.ContainerList(context.Background(), containertypes.ListOptions{All: true})
 	if err != nil {
-		panic(err)
+		return nil, err
 	}
 
 	boxes := []*Box{}
@@ -30,7 +30,7 @@ func GetBoxes() []*Box {
 			kind = KindCompose
 		}
 
-		box := findBox(boxes, name)
+		box := findBoxByName(boxes, name)
 		if box == nil {
 			box := &Box{
 				Name: name,
@@ -49,10 +49,11 @@ func GetBoxes() []*Box {
 		}
 	}
 
-	return boxes
+	return boxes, nil
+
 }
 
-func findBox(boxes []*Box, name string) *Box {
+func findBoxByName(boxes []*Box, name string) *Box {
 	for _, box := range boxes {
 		if box.Name == name {
 			return box

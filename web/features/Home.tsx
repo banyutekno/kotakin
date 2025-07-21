@@ -1,8 +1,10 @@
 import { Link } from 'react-router-dom';
+import Search from './components/Search';
 
 export default function Home() {
   return (
     <div className="home-wrapper p-5">
+      <Search />
       <div className="p-3">
         <div className="d-inline-block rounded p-4 column-bg">
           <Link to="/store" className="text-decoration-none text-reset">

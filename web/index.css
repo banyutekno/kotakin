@@ -1,0 +1,12 @@
+:root{
+  --brand-dark:#222E3C;
+}
+
+.home-wrapper{
+  max-width: 70rem;
+  margin: 0 auto;
+}
+
+.column-bg{
+  background-color: var(--brand-dark);
+}

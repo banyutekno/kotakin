@@ -3,13 +3,15 @@ import { lazy } from 'react';
 import { BoxProvider } from './contexts/BoxProvider';
 
 const Home = lazy(() => import('./features/Home'));
+const Store = lazy(() => import('./features/AppStore'));
+
 function App() {
   return (
     <BoxProvider>
       <BrowserRouter>
         <Routes>
           <Route path="/" element={<Home />} />
-          <Route path="/about" element={<About />} />
+          <Route path="/store" element={<Store />} />
           <Route path="/*" element={<NotFound />} />
         </Routes>
       </BrowserRouter>
@@ -18,10 +20,6 @@ function App() {
 }
 
 export default App;
-
-function About() {
-  return <div>About</div>;
-}
 
 function NotFound() {
   return <div>Not Found</div>;

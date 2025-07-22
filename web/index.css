@@ -1,5 +1,6 @@
 :root{
   --brand-dark:#222E3C;
+  --brand-soft-dark:#2A3A4F;
 }
 
 .home-wrapper{
@@ -9,4 +10,9 @@
 
 .column-bg{
   background-color: var(--brand-dark);
+  transition: background-color 0.5s ease;
+}
+
+.column-bg:hover{
+  background-color:var(--brand-soft-dark) !important;
 }

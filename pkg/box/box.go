@@ -14,10 +14,13 @@ const (
 	KindCompose   Kind = "compose"
 )
 
+type State string
+
 type Box struct {
-	ID         string       `json:"id"`
-	Kind       Kind         `json:"kind"`
-	Containers []*Container `json:"containers"`
+	ID      string `json:"id"`
+	Kind    Kind   `json:"kind"`
+	Managed bool   `json:"managed"`
+	State   State  `json:"state"`
 }
 
 func FromDir(boxDir string) (*Box, error) {
@@ -31,7 +34,9 @@ func FromDir(boxDir string) (*Box, error) {
 
 	id := filepath.Base(boxDir)
 	box := &Box{
-		ID: id,
+		ID:    id,
+		Kind:  KindCompose,
+		State: "unknown",
 	}
 
 	return box, nil

@@ -1,6 +1,7 @@
 package box
 
 import (
+	"context"
 	"regexp"
 	"strconv"
 	"strings"
@@ -13,7 +14,7 @@ type Service struct {
 	config *config.Config
 }
 
-func (s *Service) nextID(base string) (string, error) {
+func (s *Service) nextID(ctx context.Context, base string) (string, error) {
 	err := &domain.NotFoundError{
 		Message: "box next id not found",
 	}
@@ -27,13 +28,13 @@ func (s *Service) nextID(base string) (string, error) {
 	base = reNonAlnum.ReplaceAllString(base, "-")
 	base = strings.Trim(base, "-")
 
-	if _, err := s.Read(base); err != nil {
+	if _, err := s.Read(ctx, base); err != nil {
 		return base, nil
 	}
 
 	for i := range 10 {
 		id := base + "-" + strconv.Itoa(i+1)
-		if _, err := s.Read(id); err != nil {
+		if _, err := s.Read(ctx, id); err != nil {
 			return id, nil
 		}
 	}

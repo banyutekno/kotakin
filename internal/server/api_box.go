@@ -10,7 +10,8 @@ import (
 
 func serveApiBox(r chi.Router, boxService *box.Service, templateService *template.Service) {
 	r.Get("/box", func(w http.ResponseWriter, r *http.Request) {
-		boxes, err := boxService.List()
+		ctx := r.Context()
+		boxes, err := boxService.List(ctx)
 		if err != nil {
 			respondErr(w, err)
 			return
@@ -20,6 +21,8 @@ func serveApiBox(r chi.Router, boxService *box.Service, templateService *templat
 	})
 
 	r.Post("/box", func(w http.ResponseWriter, r *http.Request) {
+		ctx := r.Context()
+
 		var cmd box.CreateCommand
 		if err := parseBody(r, &cmd); err != nil {
 			respondErr(w, err)
@@ -31,11 +34,24 @@ func serveApiBox(r chi.Router, boxService *box.Service, templateService *templat
 			return
 		}
 
-		if _, err := boxService.Create(cmd); err != nil {
+		if _, err := boxService.Create(ctx, cmd); err != nil {
 			respondErr(w, err)
 			return
 		}
 
 		respondJson(w, 201, nil)
+	})
+
+	r.Get("/box/{id}", func(w http.ResponseWriter, r *http.Request) {
+		ctx := r.Context()
+		id := chi.URLParam(r, "id")
+
+		box, err := boxService.Read(ctx, id)
+		if err != nil {
+			respondErr(w, err)
+			return
+		}
+
+		respondJson(w, 200, box)
 	})
 }

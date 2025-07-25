@@ -1,6 +1,7 @@
 package box
 
 import (
+	"context"
 	"path/filepath"
 
 	"github.com/banyutekno/kotakin/pkg/utils"
@@ -13,10 +14,10 @@ type CreateCommand struct {
 	Env      map[string]string `json:"env"`
 }
 
-func (s *Service) Create(cmd CreateCommand) (string, error) {
-	id, err := s.nextID(cmd.Name)
+func (s *Service) Create(ctx context.Context, cmd CreateCommand) (string, error) {
+	id, err := s.nextID(ctx, cmd.Name)
 	if err != nil {
-		id, err = s.nextID(filepath.Base(cmd.Template))
+		id, err = s.nextID(ctx, filepath.Base(cmd.Template))
 		if err != nil {
 			return "", err
 		}

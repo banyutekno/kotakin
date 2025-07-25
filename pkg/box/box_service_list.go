@@ -2,55 +2,69 @@ package box
 
 import (
 	"context"
+	"os"
+
+	"github.com/banyutekno/kotakin/pkg/docker"
 
 	containertypes "github.com/docker/docker/api/types/container"
-	"github.com/docker/docker/client"
 )
 
-func (s *Service) List() ([]*Box, error) {
-	cli, err := client.NewClientWithOpts(client.FromEnv, client.WithAPIVersionNegotiation())
-	if err != nil {
-		return nil, err
-	}
-
-	containers, err := cli.ContainerList(context.Background(), containertypes.ListOptions{All: true})
-	if err != nil {
-		return nil, err
-	}
-
+func (s *Service) List(ctx context.Context) ([]*Box, error) {
 	boxes := []*Box{}
 
-	for _, container := range containers {
-		id := container.Names[0][1:]
-		kind := KindContainer
+	rootDir := s.config.BoxDir("")
+	entries, err := os.ReadDir(rootDir)
+	if err != nil {
+		return nil, err
+	}
 
-		composeProject := container.Labels["com.docker.compose.project"]
-		if composeProject != "" {
-			id = composeProject
-			kind = KindCompose
+	for _, entry := range entries {
+		box, err := s.Read(ctx, entry.Name())
+		if err != nil {
+			return nil, err
 		}
+		boxes = append(boxes, box)
+	}
 
-		box := findBoxByID(boxes, id)
-		if box == nil {
-			box := &Box{
-				ID:   id,
-				Kind: kind,
-				Containers: []*Container{{
-					ID:   container.ID,
-					Name: container.Names[0][1:],
-				}},
-			}
-			boxes = append(boxes, box)
-		} else {
-			box.Containers = append(box.Containers, &Container{
-				ID:   container.ID,
-				Name: container.Names[0][1:],
-			})
-		}
+	boxes, err = s.populateUnmanagedBoxes(ctx, boxes)
+	if err != nil {
+		return nil, err
 	}
 
 	return boxes, nil
 
+}
+
+func (s *Service) populateUnmanagedBoxes(ctx context.Context, boxes []*Box) ([]*Box, error) {
+	cli, err := docker.Client()
+	if err != nil {
+		return nil, err
+	}
+
+	containers, err := cli.ContainerList(ctx, containertypes.ListOptions{All: true})
+	if err != nil {
+		return nil, err
+	}
+
+	for _, container := range containers {
+		id := container.Names[0][1:]
+
+		composeProject := container.Labels["com.docker.compose.project"]
+		if composeProject != "" {
+			id = composeProject
+		}
+
+		box := findBoxByID(boxes, id)
+		if box == nil {
+			box, err := s.Read(ctx, id)
+			if err != nil {
+				return nil, err
+			}
+			boxes = append(boxes, box)
+		}
+	}
+
+	return boxes, nil
 }
 
 func findBoxByID(boxes []*Box, name string) *Box {
@@ -61,4 +75,5 @@ func findBoxByID(boxes []*Box, name string) *Box {
 	}
 
 	return nil
+
 }

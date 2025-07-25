@@ -3,10 +3,15 @@ package repo
 import (
 	"github.com/banyutekno/kotakin/pkg/domain"
 	"github.com/banyutekno/kotakin/pkg/git"
+	"github.com/banyutekno/kotakin/pkg/utils"
 )
 
-func (s *RepoService) Create(repoURL string) (string, error) {
-	id := s.resolveRepoIDByURL(repoURL)
+type CreateCommand struct {
+	URL string
+}
+
+func (s *Service) Create(cmd CreateCommand) (string, error) {
+	id := s.resolveID(cmd.URL)
 
 	repo, _ := s.Read(id)
 	if repo != nil {
@@ -15,12 +20,12 @@ func (s *RepoService) Create(repoURL string) (string, error) {
 		}
 	}
 
-	repoDir, err := s.repoDir(id)
-	if err != nil {
+	repoDir := s.config.RepoDir(id)
+	if err := utils.EnsureDir(repoDir); err != nil {
 		return "", err
 	}
 
-	git.Clone(repoURL, repoDir)
+	git.Clone(cmd.URL, repoDir)
 
 	return id, nil
 }

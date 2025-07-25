@@ -9,26 +9,26 @@ import (
 )
 
 type Template struct {
-	ID   string
-	Repo string
-	Name string
+	ID   string `json:"id"`
+	Repo string `json:"repo"`
+	Name string `json:"name"`
 }
 
 func FromDir(templateDir string) (*Template, error) {
-	repo := filepath.Base(filepath.Dir(templateDir))
-	name := filepath.Base(templateDir)
-	template := &Template{
-		ID:   repo + "/" + name,
-		Repo: repo,
-		Name: name,
-	}
-
 	_, err := os.Stat(templateDir)
 	if os.IsNotExist(err) {
 		return nil, &domain.NotFoundError{
 			Message: "template not found",
 			Cause:   err,
 		}
+	}
+
+	repo := filepath.Base(filepath.Dir(templateDir))
+	name := filepath.Base(templateDir)
+	template := &Template{
+		ID:   repo + "/" + name,
+		Repo: repo,
+		Name: name,
 	}
 
 	repoFile := filepath.Join(templateDir, "template.yml")

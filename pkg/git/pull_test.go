@@ -1,13 +1,11 @@
 package git
 
 import (
-	"log"
 	"testing"
 )
 
 func TestPullWithSshUrl(t *testing.T) {
 	repoPath := "/home/reekoheek/Workspaces/bts/kotakin_data/repos/ssh"
-	log.Println("repoPath=", repoPath)
 
 	err := Pull(repoPath)
 	if err != nil {
@@ -17,7 +15,6 @@ func TestPullWithSshUrl(t *testing.T) {
 
 func TestPullWithHttpsUrl(t *testing.T) {
 	repoPath := "/home/reekoheek/Workspaces/bts/kotakin_data/repos/https"
-	log.Println("repoPath=", repoPath)
 
 	err := Pull(repoPath)
 	if err != nil {
@@ -27,7 +24,6 @@ func TestPullWithHttpsUrl(t *testing.T) {
 
 func TestPullWithError(t *testing.T) {
 	repoPath := "/home/reekoheek/Workspaces/bts/kotakin_data/repos/foo"
-	log.Println("repoPath=", repoPath)
 
 	err := Pull(repoPath)
 	if err == nil {

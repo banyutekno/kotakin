@@ -5,11 +5,12 @@ import "os"
 func EnsureDir(path string) error {
 	info, err := os.Stat(path)
 	if os.IsNotExist(err) {
-		os.MkdirAll(path, os.ModePerm)
+		return os.MkdirAll(path, os.ModePerm)
 	}
-	if err == nil {
+	if err != nil {
 		return err
 	}
+
 	if !info.IsDir() {
 		return &os.PathError{
 			Op:   "mkdir",

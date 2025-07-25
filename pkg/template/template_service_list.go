@@ -3,10 +3,15 @@ package template
 import (
 	"os"
 	"path/filepath"
+
+	"github.com/banyutekno/kotakin/pkg/utils"
 )
 
 func (s *Service) List() ([]*Template, error) {
-	rootDir := s.templateDir("")
+	rootDir := s.config.TemplateDir("")
+	if err := utils.EnsureDir(rootDir); err != nil {
+		return nil, err
+	}
 
 	repoFiles, err := os.ReadDir(rootDir)
 	if err != nil {

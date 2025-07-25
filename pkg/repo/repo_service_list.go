@@ -2,11 +2,13 @@ package repo
 
 import (
 	"os"
+
+	"github.com/banyutekno/kotakin/pkg/utils"
 )
 
-func (s *RepoService) List() ([]*Repo, error) {
-	rootDir, err := s.repoDir("")
-	if err != nil {
+func (s *Service) List() ([]*Repo, error) {
+	rootDir := s.config.RepoDir("")
+	if err := utils.EnsureDir(rootDir); err != nil {
 		return nil, err
 	}
 

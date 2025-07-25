@@ -9,13 +9,13 @@ import (
 )
 
 func ServeApi(r chi.Router, config *config.Config) {
-	repoService := repo.NewRepoService(config)
-	templateService := template.NewTemplateService(config)
-	boxService := box.NewBoxService()
+	repoService := repo.NewService(config)
+	templateService := template.NewService(config)
+	boxService := box.NewService(config)
 
 	r.Route("/api", func(r chi.Router) {
 		serveApiConfig(r, config)
-		serveApiBox(r, boxService)
+		serveApiBox(r, boxService, templateService)
 		serveApiRepo(r, repoService)
 		serveApiTemplate(r, templateService)
 	})

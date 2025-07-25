@@ -7,11 +7,7 @@ import (
 	"github.com/go-chi/chi/v5"
 )
 
-type AddRepoBody struct {
-	URL string
-}
-
-func serveApiRepo(r chi.Router, repoService *repo.RepoService) {
+func serveApiRepo(r chi.Router, repoService *repo.Service) {
 	r.Get("/repo", func(w http.ResponseWriter, r *http.Request) {
 		repos, err := repoService.List()
 		if err != nil {
@@ -23,13 +19,13 @@ func serveApiRepo(r chi.Router, repoService *repo.RepoService) {
 	})
 
 	r.Post("/repo", func(w http.ResponseWriter, r *http.Request) {
-		var body AddRepoBody
-		if err := parseBody(r, &body); err != nil {
+		var cmd repo.CreateCommand
+		if err := parseBody(r, &cmd); err != nil {
 			respondErr(w, err)
 			return
 		}
 
-		_, err := repoService.Create(body.URL)
+		_, err := repoService.Create(cmd)
 		if err != nil {
 			respondErr(w, err)
 			return

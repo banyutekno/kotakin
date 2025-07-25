@@ -2,7 +2,6 @@ package git
 
 import (
 	"fmt"
-	"log"
 	"os"
 	"strings"
 
@@ -21,7 +20,6 @@ func Pull(repoPath string) error {
 		return fmt.Errorf("get remote: %w", err)
 	}
 	remoteURL := remote.Config().URLs[0]
-	log.Println("remoteURL", remoteURL)
 
 	wt, err := repo.Worktree()
 	if err != nil {

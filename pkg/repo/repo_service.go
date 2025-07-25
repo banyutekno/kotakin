@@ -2,32 +2,17 @@ package repo
 
 import (
 	"net/url"
-	"path/filepath"
 	"regexp"
 	"strings"
 
 	"github.com/banyutekno/kotakin/pkg/config"
-	"github.com/banyutekno/kotakin/pkg/utils"
 )
 
-type RepoService struct {
+type Service struct {
 	config *config.Config
 }
 
-func (s *RepoService) repoDir(id string) (string, error) {
-	repoDir := filepath.Join(s.config.DataDir, "repos")
-	if err := utils.EnsureDir(repoDir); err != nil {
-		return "", err
-	}
-
-	if id != "" {
-		repoDir = filepath.Join(repoDir, id)
-	}
-
-	return repoDir, nil
-}
-
-func (s *RepoService) resolveRepoIDByURL(repoURL string) string {
+func (s *Service) resolveID(repoURL string) string {
 	repoURL = strings.TrimSpace(repoURL)
 
 	repoURL = strings.TrimPrefix(repoURL, "git@")
@@ -46,8 +31,8 @@ func (s *RepoService) resolveRepoIDByURL(repoURL string) string {
 	return id
 }
 
-func NewRepoService(config *config.Config) *RepoService {
-	return &RepoService{
+func NewService(config *config.Config) *Service {
+	return &Service{
 		config: config,
 	}
 }

@@ -7,7 +7,7 @@ import (
 	"github.com/docker/docker/client"
 )
 
-func (s *BoxService) List() ([]*Box, error) {
+func (s *Service) List() ([]*Box, error) {
 	cli, err := client.NewClientWithOpts(client.FromEnv, client.WithAPIVersionNegotiation())
 	if err != nil {
 		return nil, err
@@ -21,19 +21,19 @@ func (s *BoxService) List() ([]*Box, error) {
 	boxes := []*Box{}
 
 	for _, container := range containers {
-		name := container.Names[0][1:]
+		id := container.Names[0][1:]
 		kind := KindContainer
 
 		composeProject := container.Labels["com.docker.compose.project"]
 		if composeProject != "" {
-			name = composeProject
+			id = composeProject
 			kind = KindCompose
 		}
 
-		box := findBoxByName(boxes, name)
+		box := findBoxByID(boxes, id)
 		if box == nil {
 			box := &Box{
-				Name: name,
+				ID:   id,
 				Kind: kind,
 				Containers: []*Container{{
 					ID:   container.ID,
@@ -53,9 +53,9 @@ func (s *BoxService) List() ([]*Box, error) {
 
 }
 
-func findBoxByName(boxes []*Box, name string) *Box {
+func findBoxByID(boxes []*Box, name string) *Box {
 	for _, box := range boxes {
-		if box.Name == name {
+		if box.ID == name {
 			return box
 		}
 	}

@@ -1,6 +1,7 @@
 package server
 
 import (
+	"log"
 	"net/http"
 
 	"github.com/banyutekno/kotakin/pkg/domain"
@@ -22,5 +23,6 @@ func respondErr(w http.ResponseWriter, err error) {
 		return
 	}
 
+	log.Printf("Caught err: %+v\n", err)
 	respondJson(w, 500, err)
 }

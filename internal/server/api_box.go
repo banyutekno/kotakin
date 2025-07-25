@@ -54,4 +54,16 @@ func serveApiBox(r chi.Router, boxService *box.Service, templateService *templat
 
 		respondJson(w, 200, box)
 	})
+
+	r.Delete("/box/{id}", func(w http.ResponseWriter, r *http.Request) {
+		ctx := r.Context()
+		id := chi.URLParam(r, "id")
+
+		if err := boxService.Delete(ctx, id); err != nil {
+			respondErr(w, err)
+			return
+		}
+
+		respondJson(w, 200, nil)
+	})
 }

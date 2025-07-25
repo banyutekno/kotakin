@@ -17,10 +17,12 @@ const (
 type State string
 
 type Box struct {
-	ID      string `json:"id"`
-	Kind    Kind   `json:"kind"`
-	Managed bool   `json:"managed"`
-	State   State  `json:"state"`
+	ID                 string `json:"id"`
+	Kind               Kind   `json:"kind"`
+	Managed            bool   `json:"managed"`
+	State              State  `json:"state"`
+	composeConfigFiles []string
+	composeWorkingDir  string
 }
 
 func FromDir(boxDir string) (*Box, error) {

@@ -2,6 +2,7 @@ package box
 
 import (
 	"context"
+	"path/filepath"
 	"slices"
 	"strings"
 
@@ -26,6 +27,10 @@ func (s *Service) Read(ctx context.Context, id string) (*Box, error) {
 	}
 
 	box.Managed = true
+	box.composeConfigFiles = []string{
+		filepath.Join(boxDir, "compose.yml"),
+	}
+	box.composeWorkingDir = boxDir
 
 	containers, err := findComposeContainers(ctx, id)
 	if err == nil && len(containers) > 0 {
@@ -85,12 +90,20 @@ func findUnmanagedComposeBox(ctx context.Context, id string) (*Box, error) {
 		return nil, &domain.NotFoundError{Message: "box not found"}
 	}
 
+	c := containers[0]
+
+	configFiles := strings.Split(c.Labels["com.docker.compose.project.config_files"], ",")
+	workingDir := c.Labels["com.docker.compose.project.working_dir"]
+
 	box := &Box{
-		ID:      id,
-		Kind:    KindCompose,
-		Managed: false,
-		State:   State(containers[0].State),
+		ID:                 id,
+		Kind:               KindCompose,
+		Managed:            false,
+		State:              State(c.State),
+		composeConfigFiles: configFiles,
+		composeWorkingDir:  workingDir,
 	}
+
 	return box, nil
 }
 

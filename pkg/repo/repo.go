@@ -5,7 +5,7 @@ import (
 	"path/filepath"
 
 	"github.com/banyutekno/kotakin/pkg/domain"
-	"gopkg.in/yaml.v3"
+	"github.com/banyutekno/kotakin/pkg/utils"
 )
 
 type Repo struct {
@@ -31,11 +31,7 @@ func FromDir(repoDir string) (*Repo, error) {
 	}
 
 	repoFile := filepath.Join(repoDir, "repository.yml")
-	data, err := os.ReadFile(repoFile)
-	if err != nil {
-		return repo, nil
-	}
+	utils.YmlRead(repoFile, repo)
 
-	_ = yaml.Unmarshal(data, repo)
 	return repo, nil
 }

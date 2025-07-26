@@ -5,7 +5,7 @@ import (
 	"path/filepath"
 
 	"github.com/banyutekno/kotakin/pkg/domain"
-	"gopkg.in/yaml.v3"
+	"github.com/banyutekno/kotakin/pkg/utils"
 )
 
 type Kind string
@@ -22,20 +22,12 @@ type ComposeConfig struct {
 	ConfigFiles []string
 }
 
-type EnvConfig struct {
-	Name        string `json:"name"`
-	Label       string `json:"label"`
-	Description string `json:"description"`
-	Default     string `json:"default"`
-}
-
 type Box struct {
-	ID            string      `json:"id"`
-	Kind          Kind        `json:"kind"`
-	State         State       `json:"state"`
-	Name          string      `json:"name,omitempty"`
-	Template      string      `json:"template,omitempty"`
-	EnvConfigs    []EnvConfig `json:"env_configs,omitempty"`
+	ID            string `json:"id"`
+	Kind          Kind   `json:"kind"`
+	State         State  `json:"state"`
+	Name          string `json:"name,omitempty"`
+	Template      string `json:"template,omitempty"`
 	composeConfig ComposeConfig
 }
 
@@ -60,10 +52,8 @@ func FromDir(boxDir string) (*Box, error) {
 	id := filepath.Base(boxDir)
 
 	config := BoxConfig{}
-	boxFile := filepath.Join(boxDir, ".box.yml")
-	if content, err := os.ReadFile(boxFile); err == nil {
-		yaml.Unmarshal(content, &config)
-	}
+	boxFile := filepath.Join(boxDir, "box.yml")
+	utils.YmlRead(boxFile, &config)
 
 	box := &Box{
 		ID:       id,

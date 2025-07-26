@@ -29,10 +29,13 @@ func serveApiBox(r chi.Router, boxService *box.Service, templateService *templat
 			return
 		}
 
-		if _, err := templateService.Read(cmd.Template); err != nil {
+		template, err := templateService.Read(cmd.Template)
+		if err != nil {
 			respondErr(w, err)
 			return
 		}
+
+		cmd.Env = template.PrepareEnv(cmd.Env)
 
 		if _, err := boxService.Create(ctx, cmd); err != nil {
 			respondErr(w, err)

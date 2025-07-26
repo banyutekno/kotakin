@@ -2,12 +2,10 @@ package box
 
 import (
 	"context"
-	"os"
 	"path/filepath"
 
 	"github.com/banyutekno/kotakin/pkg/utils"
 	"github.com/joho/godotenv"
-	"gopkg.in/yaml.v3"
 )
 
 type CreateCommand struct {
@@ -37,8 +35,8 @@ func (s *Service) Create(ctx context.Context, cmd CreateCommand) (string, error)
 		Name:     cmd.Name,
 		Template: cmd.Template,
 	}
-	boxFile := filepath.Join(boxDir, ".box.yml")
-	writeYAML(boxFile, config)
+	boxFile := filepath.Join(boxDir, "box.yml")
+	utils.YmlWrite(boxFile, &config)
 
 	// TODO: validate and set default env
 
@@ -57,20 +55,4 @@ func (s *Service) findNextIDByNameAndTemplate(ctx context.Context, name string, 
 
 	id, err := s.nextID(ctx, filepath.Base(template))
 	return id, err
-}
-
-func writeYAML(boxFile string, config BoxConfig) error {
-	file, err := os.Create(boxFile)
-	if err != nil {
-		return err
-	}
-	defer file.Close()
-
-	encoder := yaml.NewEncoder(file)
-	encoder.SetIndent(2)
-	if err := encoder.Encode(config); err != nil {
-		return err
-	}
-
-	return nil
 }

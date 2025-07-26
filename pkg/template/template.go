@@ -5,13 +5,40 @@ import (
 	"path/filepath"
 
 	"github.com/banyutekno/kotakin/pkg/domain"
-	"gopkg.in/yaml.v3"
+	"github.com/banyutekno/kotakin/pkg/utils"
 )
 
+type EnvConfig struct {
+	Name        string
+	Label       string
+	Description string
+	Default     string
+}
+
 type Template struct {
-	ID   string `json:"id"`
-	Repo string `json:"repo"`
-	Name string `json:"name"`
+	ID         string      `json:"id"`
+	Repo       string      `json:"repo"`
+	Slug       string      `json:"slug"`
+	Name       string      `json:"name"`
+	EnvConfigs []EnvConfig `json:"env_configs"`
+}
+
+func (t *Template) PrepareEnv(env map[string]string) map[string]string {
+	if env == nil {
+		env = map[string]string{}
+	}
+
+	for _, envConfig := range t.EnvConfigs {
+		if _, ok := env[envConfig.Name]; !ok {
+			env[envConfig.Name] = envConfig.Default
+		}
+	}
+	return env
+}
+
+type TemplateConfig struct {
+	Name       string
+	EnvConfigs []EnvConfig `yaml:"env_configs"`
 }
 
 func FromDir(templateDir string) (*Template, error) {
@@ -23,19 +50,23 @@ func FromDir(templateDir string) (*Template, error) {
 		}
 	}
 
+	var config TemplateConfig
+	configFile := filepath.Join(templateDir, "template.yml")
+	utils.YmlRead(configFile, &config)
+
 	repo := filepath.Base(filepath.Dir(templateDir))
 	slug := filepath.Base(templateDir)
+
 	template := &Template{
-		ID:   repo + "/" + slug,
-		Repo: repo,
+		ID:         repo + "/" + slug,
+		Repo:       repo,
+		Slug:       slug,
+		Name:       config.Name,
+		EnvConfigs: config.EnvConfigs,
 	}
 
 	repoFile := filepath.Join(templateDir, "template.yml")
-	data, err := os.ReadFile(repoFile)
-	if err != nil {
-		return template, nil
-	}
+	utils.YmlRead(repoFile, template)
 
-	_ = yaml.Unmarshal(data, repo)
 	return template, nil
 }

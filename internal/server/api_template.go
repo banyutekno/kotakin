@@ -18,8 +18,8 @@ func serveApiTemplate(r chi.Router, templateService *template.Service) {
 		respondJson(w, 200, templates)
 	})
 
-	r.Get("/template/{repo}/{name}", func(w http.ResponseWriter, r *http.Request) {
-		id := chi.URLParam(r, "repo") + "/" + chi.URLParam(r, "name")
+	r.Get("/template/{repo}/{slug}", func(w http.ResponseWriter, r *http.Request) {
+		id := chi.URLParam(r, "repo") + "/" + chi.URLParam(r, "slug")
 		template, err := templateService.Read(id)
 		if err != nil {
 			respondErr(w, err)

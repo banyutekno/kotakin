@@ -10,7 +10,7 @@ type MessageResponse struct {
 	Message string `json:"message"`
 }
 
-func respondJson(w http.ResponseWriter, status int, data interface{}) {
+func respondJson(w http.ResponseWriter, status int, data any) {
 	if data == nil {
 		data = &MessageResponse{"success"}
 	}

@@ -7,7 +7,7 @@ import (
 	"github.com/banyutekno/kotakin/pkg/domain"
 )
 
-func parseBody(r *http.Request, body interface{}) error {
+func parseBody(r *http.Request, body any) error {
 	err := json.NewDecoder(r.Body).Decode(body)
 	if err != nil {
 		return &domain.ValidationError{

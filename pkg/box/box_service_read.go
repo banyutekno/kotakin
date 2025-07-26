@@ -3,14 +3,10 @@ package box
 import (
 	"context"
 	"path/filepath"
-	"slices"
 	"strings"
 
 	"github.com/banyutekno/kotakin/pkg/docker"
 	"github.com/banyutekno/kotakin/pkg/domain"
-
-	containertypes "github.com/docker/docker/api/types/container"
-	"github.com/docker/docker/api/types/filters"
 )
 
 func (s *Service) Read(ctx context.Context, id string) (*Box, error) {
@@ -26,13 +22,14 @@ func (s *Service) Read(ctx context.Context, id string) (*Box, error) {
 		return nil, &domain.NotFoundError{Message: "box not found"}
 	}
 
-	box.Managed = true
-	box.composeConfigFiles = []string{
-		filepath.Join(boxDir, "compose.yml"),
+	box.composeConfig = ComposeConfig{
+		WorkingDir: boxDir,
+		ConfigFiles: []string{
+			filepath.Join(boxDir, "compose.yml"),
+		},
 	}
-	box.composeWorkingDir = boxDir
 
-	containers, err := findComposeContainers(ctx, id)
+	containers, err := docker.ComposeContainerList(ctx, id)
 	if err == nil && len(containers) > 0 {
 		box.State = State(containers[0].State)
 	}
@@ -51,38 +48,22 @@ func findUnmanagedBox(ctx context.Context, id string) (*Box, error) {
 }
 
 func findUnmanagedContainerBox(ctx context.Context, id string) (*Box, error) {
-	cli, err := docker.Client()
-	if err != nil {
-		return nil, err
-	}
-
-	filterArgs := filters.NewArgs()
-	filterArgs.Add("name", id)
-	containers, err := cli.ContainerList(ctx, containertypes.ListOptions{
-		All:     true,
-		Filters: filterArgs,
-	})
-	if err != nil {
-		return nil, err
-	}
-
-	for _, container := range containers {
-		if slices.Contains(container.Names, "/"+id) {
-			box := &Box{
-				ID:      id,
-				Kind:    KindContainer,
-				Managed: false,
-				State:   State(containers[0].State),
-			}
-			return box, nil
+	container, err := docker.Container(ctx, id)
+	if err == nil {
+		box := &Box{
+			ID:    id,
+			Kind:  KindContainer,
+			State: State(container.State),
 		}
+
+		return box, nil
 	}
 
 	return nil, &domain.NotFoundError{Message: "box not found"}
 }
 
 func findUnmanagedComposeBox(ctx context.Context, id string) (*Box, error) {
-	containers, err := findComposeContainers(ctx, id)
+	containers, err := docker.ComposeContainerList(ctx, id)
 	if err != nil {
 		return nil, err
 	}
@@ -96,27 +77,14 @@ func findUnmanagedComposeBox(ctx context.Context, id string) (*Box, error) {
 	workingDir := c.Labels["com.docker.compose.project.working_dir"]
 
 	box := &Box{
-		ID:                 id,
-		Kind:               KindCompose,
-		Managed:            false,
-		State:              State(c.State),
-		composeConfigFiles: configFiles,
-		composeWorkingDir:  workingDir,
+		ID:    id,
+		Kind:  KindCompose,
+		State: State(c.State),
+		composeConfig: ComposeConfig{
+			WorkingDir:  workingDir,
+			ConfigFiles: configFiles,
+		},
 	}
 
 	return box, nil
-}
-
-func findComposeContainers(ctx context.Context, id string) ([]containertypes.Summary, error) {
-	cli, err := docker.Client()
-	if err != nil {
-		return nil, err
-	}
-
-	filterArgs := filters.NewArgs()
-	filterArgs.Add("label", "com.docker.compose.project="+id)
-	return cli.ContainerList(ctx, containertypes.ListOptions{
-		All:     true,
-		Filters: filterArgs,
-	})
 }

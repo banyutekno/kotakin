@@ -13,7 +13,7 @@ func (s *Service) Delete(ctx context.Context, id string) error {
 		return err
 	}
 
-	if !box.Managed {
+	if !box.Managed() {
 		return &domain.BusinessRuleError{Message: "unmanaged box"}
 	}
 

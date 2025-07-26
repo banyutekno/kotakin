@@ -1,8 +1,7 @@
 package config
 
 import (
-	"fmt"
-	"os"
+	"log"
 	"path/filepath"
 )
 
@@ -34,16 +33,13 @@ func (c *Config) BoxDir(id string) string {
 	return dir
 }
 
-func FromEnv() (*Config, error) {
-	dataDir := os.Getenv("DATA_DIR")
-	if dataDir == "" {
-		return nil, fmt.Errorf("invalid config data dir")
-	}
-
+func WithDataDir(dataDir string) (*Config, error) {
 	dataDir, err := filepath.Abs(dataDir)
 	if err != nil {
 		panic(err)
 	}
+
+	log.Printf("DATA_DIR=%s\n", dataDir)
 
 	config := &Config{
 		DataDir: dataDir,

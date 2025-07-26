@@ -2,10 +2,12 @@ package box
 
 import (
 	"context"
+	"os"
 	"path/filepath"
 
 	"github.com/banyutekno/kotakin/pkg/utils"
 	"github.com/joho/godotenv"
+	"gopkg.in/yaml.v3"
 )
 
 type CreateCommand struct {
@@ -15,12 +17,9 @@ type CreateCommand struct {
 }
 
 func (s *Service) Create(ctx context.Context, cmd CreateCommand) (string, error) {
-	id, err := s.nextID(ctx, cmd.Name)
+	id, err := s.findNextIDByNameAndTemplate(ctx, cmd.Name, cmd.Template)
 	if err != nil {
-		id, err = s.nextID(ctx, filepath.Base(cmd.Template))
-		if err != nil {
-			return "", err
-		}
+		return "", err
 	}
 
 	templateDir := s.config.TemplateDir(cmd.Template)
@@ -34,10 +33,42 @@ func (s *Service) Create(ctx context.Context, cmd CreateCommand) (string, error)
 		return "", err
 	}
 
+	config := BoxConfig{
+		Name:     cmd.Name,
+		Template: cmd.Template,
+	}
+	boxFile := filepath.Join(boxDir, ".box.yml")
+	writeYAML(boxFile, config)
+
 	envFile := filepath.Join(boxDir, ".env")
 	if err := godotenv.Write(cmd.Env, envFile); err != nil {
 		return "", err
 	}
 
 	return id, nil
+}
+
+func (s *Service) findNextIDByNameAndTemplate(ctx context.Context, name string, template string) (string, error) {
+	if id, err := s.nextID(ctx, name); err == nil {
+		return id, nil
+	}
+
+	id, err := s.nextID(ctx, filepath.Base(template))
+	return id, err
+}
+
+func writeYAML(boxFile string, config BoxConfig) error {
+	file, err := os.Create(boxFile)
+	if err != nil {
+		return err
+	}
+	defer file.Close()
+
+	encoder := yaml.NewEncoder(file)
+	encoder.SetIndent(2)
+	if err := encoder.Encode(config); err != nil {
+		return err
+	}
+
+	return nil
 }

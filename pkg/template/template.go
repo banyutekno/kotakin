@@ -24,11 +24,10 @@ func FromDir(templateDir string) (*Template, error) {
 	}
 
 	repo := filepath.Base(filepath.Dir(templateDir))
-	name := filepath.Base(templateDir)
+	slug := filepath.Base(templateDir)
 	template := &Template{
-		ID:   repo + "/" + name,
+		ID:   repo + "/" + slug,
 		Repo: repo,
-		Name: name,
 	}
 
 	repoFile := filepath.Join(templateDir, "template.yml")

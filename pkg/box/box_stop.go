@@ -4,8 +4,6 @@ import (
 	"context"
 
 	"github.com/banyutekno/kotakin/pkg/docker"
-	"github.com/banyutekno/kotakin/pkg/domain"
-	"github.com/docker/docker/api/types/container"
 )
 
 func (b *Box) Stop(ctx context.Context) error {
@@ -21,25 +19,23 @@ func (b *Box) Stop(ctx context.Context) error {
 }
 
 func (b *Box) stopCompose(ctx context.Context) error {
-	if !b.Managed {
-		return &domain.BusinessRuleError{Message: "unmanaged box"}
-	}
-
-	err := docker.ComposeDown(ctx, b.composeWorkingDir, b.composeConfigFiles)
+	containers, err := docker.ComposeContainerList(ctx, b.ID)
 	if err != nil {
 		return err
+	}
+
+	for _, container := range containers {
+		err := docker.ContainerStop(ctx, container.ID)
+		if err != nil {
+			return err
+		}
 	}
 
 	return nil
 }
 
 func (b *Box) stopContainer(ctx context.Context) error {
-	cli, err := docker.Client()
-	if err != nil {
-		return err
-	}
-
-	if err := cli.ContainerStop(ctx, b.ID, container.StopOptions{}); err != nil {
+	if err := docker.ContainerStop(ctx, b.ID); err != nil {
 		return err
 	}
 

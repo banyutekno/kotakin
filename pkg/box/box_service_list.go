@@ -5,8 +5,6 @@ import (
 	"os"
 
 	"github.com/banyutekno/kotakin/pkg/docker"
-
-	containertypes "github.com/docker/docker/api/types/container"
 )
 
 func (s *Service) List(ctx context.Context) ([]*Box, error) {
@@ -36,12 +34,7 @@ func (s *Service) List(ctx context.Context) ([]*Box, error) {
 }
 
 func (s *Service) populateUnmanagedBoxes(ctx context.Context, boxes []*Box) ([]*Box, error) {
-	cli, err := docker.Client()
-	if err != nil {
-		return nil, err
-	}
-
-	containers, err := cli.ContainerList(ctx, containertypes.ListOptions{All: true})
+	containers, err := docker.ContainerList(ctx)
 	if err != nil {
 		return nil, err
 	}

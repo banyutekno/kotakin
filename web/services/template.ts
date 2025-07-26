@@ -1,7 +1,7 @@
 import { HttpError } from './error';
 
-export const getBoxes = async () => {
-  const resp = await fetch('/api/box');
+export const getTemplates = async () => {
+  const resp = await fetch('/api/template');
   if (resp.status !== 200) {
     throw new HttpError(resp.status);
   }

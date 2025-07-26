@@ -2,25 +2,21 @@ import { Link } from 'react-router-dom';
 import { Search } from './components/Search';
 import { Button } from 'react-bootstrap';
 import { useEffect, useState } from 'react';
-import { getBoxes } from '../services/box';
+import { getTemplates } from '../services/template';
 
-export interface Box {
+interface Template {
   id: string;
-  name: string;
-  kind: string;
-  template: string;
 }
 
-export default function Home() {
-  const [boxes, setBoxes] = useState<Box[]>([]);
+export default function TemplateList() {
+  const [templates, setTemplates] = useState<Template[]>([]);
 
   useEffect(() => {
     (async () => {
-      const boxes = await getBoxes();
-      setBoxes(boxes);
+      const templates = await getTemplates();
+      setTemplates(templates);
     })();
   }, []);
-
   return (
     <>
       <nav className="p-2 column-bg">
@@ -38,25 +34,15 @@ export default function Home() {
           </div>
 
           <div className="me-3">
-            <Link to="/store">
-              <Button>Add Application</Button>
-            </Link>
+            <Button>Add Repository</Button>
           </div>
         </div>
       </nav>
 
-      <div className="home-wrapper p-5">
-        <div className="p-3 d-flex gap-3">
-          {boxes?.map((box) => (
-            <div key={box.name}>
-              <div className="d-inline-block rounded p-4 column-bg">
-                <i className="bi bi-google-play text-light fs-1 ms-3" />
-                <p className="mb-0">{box.name ?? box.id}</p>
-                <p className="mb-0">{box.template ?? '-'}</p>
-              </div>
-            </div>
-          ))}
-        </div>
+      <div>
+        {templates.map((template) => (
+          <div key={template.id}>{template.id}</div>
+        ))}
       </div>
     </>
   );

@@ -40,6 +40,8 @@ func (s *Service) Create(ctx context.Context, cmd CreateCommand) (string, error)
 	boxFile := filepath.Join(boxDir, ".box.yml")
 	writeYAML(boxFile, config)
 
+	// TODO: validate and set default env
+
 	envFile := filepath.Join(boxDir, ".env")
 	if err := godotenv.Write(cmd.Env, envFile); err != nil {
 		return "", err

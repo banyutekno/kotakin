@@ -1,21 +1,21 @@
 import { BrowserRouter, Route, Routes } from 'react-router-dom';
 import { lazy } from 'react';
-import { BoxProvider } from './contexts/BoxProvider';
+import { StrictMode } from 'react';
 
 const Home = lazy(() => import('./features/Home'));
-const Store = lazy(() => import('./features/AppStore'));
+const TemplateList = lazy(() => import('./features/TemplateList'));
 
 function App() {
   return (
-    <BoxProvider>
+    <StrictMode>
       <BrowserRouter>
         <Routes>
           <Route path="/" element={<Home />} />
-          <Route path="/store" element={<Store />} />
+          <Route path="/store" element={<TemplateList />} />
           <Route path="/*" element={<NotFound />} />
         </Routes>
       </BrowserRouter>
-    </BoxProvider>
+    </StrictMode>
   );
 }
 

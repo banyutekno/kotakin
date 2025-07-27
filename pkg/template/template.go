@@ -9,10 +9,10 @@ import (
 )
 
 type EnvConfig struct {
-	Name        string
-	Label       string
-	Description string
-	Default     string
+	Name        string `json:"name"`
+	Label       string `json:"label"`
+	Description string `json:"description"`
+	Default     string `json:"default"`
 }
 
 type Template struct {

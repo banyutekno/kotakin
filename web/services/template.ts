@@ -9,3 +9,13 @@ export const getTemplates = async () => {
   const body = await resp.json();
   return body;
 };
+
+export const getTemplate = async (id: string) => {
+  const resp = await fetch(`/api/template/${id}`);
+  if (resp.status !== 200) {
+    throw new HttpError(resp.status);
+  }
+
+  const body = await resp.json();
+  return body;
+};

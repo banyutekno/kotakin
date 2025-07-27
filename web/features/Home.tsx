@@ -1,25 +1,44 @@
 import { Link } from 'react-router-dom';
 import { Search } from './components/Search';
 import { Button } from 'react-bootstrap';
-import { useEffect, useState } from 'react';
-import { getBoxes } from '../services/box';
+import { useCallback, useEffect, useState } from 'react';
+import { getBoxes, removeBox, startBox, stopBox } from '../services/box';
+import { resolveName } from '../helpers/resolveName';
 
 export interface Box {
   id: string;
   name: string;
   kind: string;
   template: string;
+  state: string;
 }
 
 export default function Home() {
   const [boxes, setBoxes] = useState<Box[]>([]);
 
-  useEffect(() => {
-    (async () => {
-      const boxes = await getBoxes();
-      setBoxes(boxes);
-    })();
+  const loadBoxes = useCallback(async () => {
+    const boxes = await getBoxes();
+    setBoxes(boxes);
   }, []);
+
+  const handleRemove = async (id: string) => {
+    await removeBox(id);
+    await loadBoxes();
+  };
+
+  const handleStart = async (id: string) => {
+    await startBox(id);
+    await loadBoxes();
+  };
+
+  const handleStop = async (id: string) => {
+    await stopBox(id);
+    await loadBoxes();
+  };
+
+  useEffect(() => {
+    loadBoxes();
+  }, [loadBoxes]);
 
   return (
     <>
@@ -45,18 +64,23 @@ export default function Home() {
         </div>
       </nav>
 
-      <div className="home-wrapper p-5">
-        <div className="p-3 d-flex gap-3">
-          {boxes?.map((box) => (
-            <div key={box.name}>
-              <div className="d-inline-block rounded p-4 column-bg">
-                <i className="bi bi-google-play text-light fs-1 ms-3" />
-                <p className="mb-0">{box.name ?? box.id}</p>
-                <p className="mb-0">{box.template ?? '-'}</p>
-              </div>
+      <div>
+        {boxes?.map((box) => (
+          <div key={box.id} className="border p-2 m-2">
+            <h4>{box.name ?? resolveName(box.id)}</h4>
+            <p>
+              {box.template ?? '(unmanaged)'} | {box.kind} | {box.state}
+            </p>
+
+            <div>
+              <Button onClick={() => handleStart(box.id)}>Start</Button>
+
+              <Button onClick={() => handleStop(box.id)}>Stop</Button>
+
+              <Button onClick={() => handleRemove(box.id)}>Remove</Button>
             </div>
-          ))}
-        </div>
+          </div>
+        ))}
       </div>
     </>
   );

@@ -41,7 +41,12 @@ export default function TemplateList() {
 
       <div>
         {templates.map((template) => (
-          <div key={template.id}>{template.id}</div>
+          <div key={template.id} className="border p-2 m-2">
+            {template.id}
+            <Link to={`/box/-/add?template=${template.id}`} className="text-decoration-none text-reset">
+              <Button>Install</Button>
+            </Link>
+          </div>
         ))}
       </div>
     </>

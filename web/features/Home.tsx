@@ -3,9 +3,9 @@ import { Search } from './components/Search';
 import { Button } from 'react-bootstrap';
 import { useCallback, useEffect, useState } from 'react';
 import { getBoxes, removeBox, startBox, stopBox } from '../services/box';
-import { resolveName } from '../helpers/resolveName';
 import { BProgress } from '@bprogress/core';
 import { useToast } from '../contexts/ToastProvider';
+import { CardBoxView } from './CardBoxView';
 
 export interface Box {
   id: string;
@@ -91,23 +91,16 @@ export default function Home() {
         </div>
       </nav>
 
-      <div>
+      <div className="row g-3 p-5">
         {boxes?.map((box) => (
-          <div key={box.id} className="border p-2 m-2">
-            <img src={`/repo-assets/${box.template}/logo.png`} alt="" />
-            <h4>{box.name ?? resolveName(box.id)}</h4>
-            <p>
-              {box.template ?? '(unmanaged)'} | {box.kind} | {box.state}
-            </p>
-
-            <div>
-              <Button onClick={() => handleStart(box.id)}>Start</Button>
-
-              <Button onClick={() => handleStop(box.id)}>Stop</Button>
-
-              <Button onClick={() => handleRemove(box.id)}>Remove</Button>
-            </div>
-          </div>
+          <CardBoxView
+            key={box.id}
+            {...box}
+            onStart={handleStart}
+            onStop={handleStop}
+            onRemove={handleRemove}
+            resolveName={(id) => id}
+          />
         ))}
       </div>
     </>

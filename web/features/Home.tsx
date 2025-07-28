@@ -94,6 +94,7 @@ export default function Home() {
       <div>
         {boxes?.map((box) => (
           <div key={box.id} className="border p-2 m-2">
+            <img src={`/repo-assets/${box.template}/logo.png`} alt="" />
             <h4>{box.name ?? resolveName(box.id)}</h4>
             <p>
               {box.template ?? '(unmanaged)'} | {box.kind} | {box.state}

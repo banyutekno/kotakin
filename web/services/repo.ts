@@ -1,7 +1,7 @@
 import { HttpError } from './error';
 
 export const addRepo = async (url: string) => {
-  const resp = await fetch('/api/box', {
+  const resp = await fetch('/api/repo', {
     method: 'POST',
     body: JSON.stringify({ url }),
   });

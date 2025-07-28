@@ -16,3 +16,13 @@
 .column-bg:hover{
   background-color:var(--brand-soft-dark) !important;
 }
+
+.modal-backdrop{
+  background-color: rgba(0, 0, 0, 0.7);
+  z-index: 1050;
+}
+
+.modal-wrapper{
+  width: 50rem;
+  height: 25rem;
+}

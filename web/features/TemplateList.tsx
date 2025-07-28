@@ -3,6 +3,7 @@ import { Search } from './components/Search';
 import { Button } from 'react-bootstrap';
 import { useEffect, useState } from 'react';
 import { getTemplates } from '../services/template';
+import { AddRepoModal } from './components/AddRepoModal';
 
 interface Template {
   id: string;
@@ -10,6 +11,7 @@ interface Template {
 
 export default function TemplateList() {
   const [templates, setTemplates] = useState<Template[]>([]);
+  const [showModal, setShowModal] = useState(false);
 
   useEffect(() => {
     (async () => {
@@ -34,10 +36,12 @@ export default function TemplateList() {
           </div>
 
           <div className="me-3">
-            <Button>Add Repository</Button>
+            <Button onClick={() => setShowModal(true)}>Add Repository</Button>
           </div>
         </div>
       </nav>
+
+      {showModal && <AddRepoModal onCancel={() => setShowModal(false)} onAdd={() => setShowModal(false)} />}
 
       <div>
         {templates.map((template) => (

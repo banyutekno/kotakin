@@ -34,6 +34,8 @@ export default function BoxAdd() {
   const [template, setTemplate] = useState<Template>();
 
   useEffect(() => {
+    document.title = 'Add Box | Kotakin';
+
     const loadTemplate = async () => {
       if (!templateId) return;
       const template = await getTemplate(templateId);
@@ -48,10 +50,12 @@ export default function BoxAdd() {
       throw new Error('template not ready');
     }
 
+    const env = Object.fromEntries(Object.entries(values.env).filter(([_, value]) => value !== ''));
+
     await addBox({
       template: template.id,
       name: values.name,
-      env: values.env,
+      env,
     });
 
     navigate('/');
@@ -66,7 +70,7 @@ export default function BoxAdd() {
 
         <div className="mb-3">
           <FormLabel>Name</FormLabel>
-          <input type="text" className="form-control" {...register('name', { required: 'Name is required' })} />
+          <input type="text" className="form-control" {...register('name')} />
           {errors.name && <p>{errors.name.message}</p>}
         </div>
 
@@ -76,7 +80,7 @@ export default function BoxAdd() {
               <FormLabel>
                 {envConfig.label} {envConfig.name}
               </FormLabel>
-              <input type="text" className="form-control" {...register(`env.${envConfig.name}`, {})} />
+              <input type="text" className="form-control" {...register(`env.${envConfig.name}`)} />
               {errors.env?.[envConfig.name] && <p>{errors.env?.[envConfig.name]?.message}</p>}
             </div>
           ))}

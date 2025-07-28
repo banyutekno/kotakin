@@ -12,11 +12,14 @@ export default function TemplateList() {
   const [templates, setTemplates] = useState<Template[]>([]);
 
   useEffect(() => {
+    document.title = 'Templates | Kotakin';
+
     (async () => {
       const templates = await getTemplates();
       setTemplates(templates);
     })();
   }, []);
+
   return (
     <>
       <nav className="p-2 column-bg">

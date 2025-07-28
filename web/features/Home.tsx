@@ -4,6 +4,7 @@ import { Button } from 'react-bootstrap';
 import { useCallback, useEffect, useState } from 'react';
 import { getBoxes, removeBox, startBox, stopBox } from '../services/box';
 import { resolveName } from '../helpers/resolveName';
+import { BProgress } from '@bprogress/core';
 
 export interface Box {
   id: string;
@@ -27,13 +28,23 @@ export default function Home() {
   };
 
   const handleStart = async (id: string) => {
-    await startBox(id);
-    await loadBoxes();
+    BProgress.start();
+    try {
+      await startBox(id);
+      await loadBoxes();
+    } finally {
+      BProgress.done();
+    }
   };
 
   const handleStop = async (id: string) => {
-    await stopBox(id);
-    await loadBoxes();
+    BProgress.start();
+    try {
+      await stopBox(id);
+      await loadBoxes();
+    } finally {
+      BProgress.done();
+    }
   };
 
   useEffect(() => {

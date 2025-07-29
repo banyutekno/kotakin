@@ -1,6 +1,7 @@
 import { BrowserRouter, Route, Routes } from 'react-router-dom';
 import { lazy } from 'react';
 import { StrictMode } from 'react';
+import { ToastProvider } from './contexts/ToastProvider';
 
 const Home = lazy(() => import('./features/Home'));
 const TemplateList = lazy(() => import('./features/TemplateList'));

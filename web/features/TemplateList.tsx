@@ -12,11 +12,14 @@ export default function TemplateList() {
   const [templates, setTemplates] = useState<Template[]>([]);
 
   useEffect(() => {
+    document.title = 'Templates | Kotakin';
+
     (async () => {
       const templates = await getTemplates();
       setTemplates(templates);
     })();
   }, []);
+
   return (
     <>
       <nav className="p-2 column-bg">
@@ -42,6 +45,7 @@ export default function TemplateList() {
       <div>
         {templates.map((template) => (
           <div key={template.id} className="border p-2 m-2">
+            <img src={`/repo-assets/${template.id}/logo.png`} alt="" />
             {template.id}
             <Link to={`/box/-/add?template=${template.id}`} className="text-decoration-none text-reset">
               <Button>Install</Button>

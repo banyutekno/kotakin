@@ -4,6 +4,7 @@ import (
 	"context"
 	"os"
 
+	"github.com/banyutekno/kotakin/pkg/docker"
 	"github.com/banyutekno/kotakin/pkg/domain"
 )
 
@@ -21,10 +22,11 @@ func (s *Service) Delete(ctx context.Context, id string) error {
 		return &domain.BusinessRuleError{Message: "still running"}
 	}
 
-	boxDir := s.config.BoxDir(id)
+	if err := docker.ComposeDown(ctx, box.composeConfig.WorkingDir, box.composeConfig.ConfigFiles); err != nil {
+		return err
+	}
 
-	err = os.RemoveAll(boxDir)
-	if err != nil {
+	if err = os.RemoveAll(box.composeConfig.WorkingDir); err != nil {
 		return err
 	}
 

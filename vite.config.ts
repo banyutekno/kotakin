@@ -11,6 +11,9 @@ export default defineConfig({
       '/api': {
         target: 'http://localhost:3000',
       },
+      '/repo-assets': {
+        target: 'http://localhost:3000',
+      },
     },
   },
   plugins: [react()],

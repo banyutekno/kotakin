@@ -37,7 +37,9 @@ export default function TemplateList() {
           </div>
 
           <div className="me-3">
-            <Button>Add Repository</Button>
+            <Link to="/repo/-/add">
+              <Button>Add Repository</Button>
+            </Link>
           </div>
         </div>
       </nav>

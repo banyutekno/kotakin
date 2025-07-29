@@ -3,6 +3,7 @@ import { Search } from './components/Search';
 import { Button } from 'react-bootstrap';
 import { useEffect, useState } from 'react';
 import { getTemplates } from '../services/template';
+import { TemplateCardView } from './components/TemplateCardView';
 
 interface Template {
   id: string;
@@ -42,16 +43,12 @@ export default function TemplateList() {
         </div>
       </nav>
 
-      <div>
-        {templates.map((template) => (
-          <div key={template.id} className="border p-2 m-2">
-            <img src={`/repo-assets/${template.id}/logo.png`} alt="" />
-            {template.id}
-            <Link to={`/box/-/add?template=${template.id}`} className="text-decoration-none text-reset">
-              <Button>Install</Button>
-            </Link>
-          </div>
-        ))}
+      <div className="container">
+        <div className="row p-5">
+          {templates.map((template) => (
+            <TemplateCardView key={template.id} id={template.id} />
+          ))}
+        </div>
       </div>
     </>
   );

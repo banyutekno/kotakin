@@ -68,7 +68,7 @@ export default function Home() {
 
   return (
     <>
-      <Navbar />
+      <Navbar showBrandText />
       <div>
         {boxes?.map((box) => (
           <div key={box.id} className="border p-2 m-2">

@@ -3,10 +3,11 @@ import { Search } from './Search';
 import { Button } from 'react-bootstrap';
 
 interface NavbarProps {
+  showBrandText?: boolean;
   showBackIcon?: boolean;
 }
 
-export function Navbar({ showBackIcon = false }: NavbarProps) {
+export function Navbar({ showBrandText = false, showBackIcon = false }: NavbarProps) {
   return (
     <>
       <nav className={`column-bg ${showBackIcon ? 'p-2' : 'p-3'}`}>
@@ -17,6 +18,13 @@ export function Navbar({ showBackIcon = false }: NavbarProps) {
                 <i className="bi bi-arrow-left-short fs-1" />
               </div>
             </Link>
+          )}
+
+          {showBrandText && (
+            <div className="ms-5 d-flex align-items-center gap-2">
+              <i className="bi bi-box fs-2 " />
+              <span className="fw-bold fs-2">Kotakin</span>
+            </div>
           )}
 
           <div className="flex-grow-1 d-flex justify-content-center">

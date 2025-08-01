@@ -1,7 +1,7 @@
 import { useEffect, useState } from 'react';
 import { Button, FormLabel } from 'react-bootstrap';
 import { useForm, type SubmitHandler } from 'react-hook-form';
-import { useNavigate, useSearchParams } from 'react-router-dom';
+import { Link, useNavigate, useSearchParams } from 'react-router-dom';
 import { getTemplate } from '../services/template';
 import { addBox } from '../services/box';
 
@@ -62,34 +62,60 @@ export default function BoxAdd() {
   };
 
   return (
-    <div className="container">
-      <form onSubmit={handleSubmit(onSubmit)}>
-        <h1>Add Box</h1>
+    <div className="container py-5">
+      <div className="column-bg card rounded-4 px-4 py-4">
+        <form onSubmit={handleSubmit(onSubmit)}>
+          <div className="d-flex justify-content-between align-items-center mb-2">
+            <h2 className="mb-4 ">
+              <i className="bi bi-box" /> Add New Box
+            </h2>
+            <Link to="/store" className="text-decoration-none text-reset">
+              <Button variant="secondary">
+                <i className="bi bi-arrow-left-short fs-5" />
+                Back
+              </Button>
+            </Link>
+          </div>
 
-        <div className="mb-3">{template?.id}</div>
-
-        <div className="mb-3">
-          <FormLabel>Name</FormLabel>
-          <input type="text" className="form-control" {...register('name')} />
-          {errors.name && <p>{errors.name.message}</p>}
-        </div>
-
-        <div>
-          {(template?.env_configs ?? []).map((envConfig) => (
-            <div key={envConfig.name} className="mb-3">
-              <FormLabel>
-                {envConfig.label} {envConfig.name}
-              </FormLabel>
-              <input type="text" className="form-control" {...register(`env.${envConfig.name}`)} />
-              {errors.env?.[envConfig.name] && <p>{errors.env?.[envConfig.name]?.message}</p>}
-            </div>
-          ))}
-        </div>
-
-        <div className="mb-3">
-          <Button type="submit">Add</Button>
-        </div>
-      </form>
+          <div className="mb-3 text-muted small">
+            <strong>Template ID:</strong> {template?.id ?? '(unavailable)'}
+          </div>
+          <div className="mb-3">
+            <FormLabel>Name</FormLabel>
+            <input
+              type="text"
+              className={`form-control ${errors.name ? 'is-invalid' : ''}`}
+              placeholder="Enter box name"
+              {...register('name')}
+            />
+            {errors.name && <div className="invalid-feedback">{errors.name.message}</div>}
+          </div>
+          <div>
+            {(template?.env_configs ?? []).map((envConfig) => (
+              <div key={envConfig.name} className="mb-3">
+                <FormLabel>
+                  {envConfig.label} <small className="text-muted">({envConfig.name})</small>
+                </FormLabel>
+                <input
+                  type="text"
+                  className={`form-control ${errors.env?.[envConfig.name] ? 'is-invalid' : ''}`}
+                  placeholder={`Enter ${envConfig.label.toLowerCase()}`}
+                  {...register(`env.${envConfig.name}`)}
+                />
+                {errors.env?.[envConfig.name] && (
+                  <div className="invalid-feedback">{errors.env?.[envConfig.name]?.message}</div>
+                )}
+              </div>
+            ))}
+          </div>
+          <div className="mt-4">
+            <Button type="submit" variant="primary" className="w-100">
+              <i className="bi bi-plus me-2" />
+              Add Box
+            </Button>
+          </div>
+        </form>
+      </div>
     </div>
   );
 }

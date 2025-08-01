@@ -1,11 +1,10 @@
-import { Link } from 'react-router-dom';
-import { Search } from './components/Search';
 import { Button } from 'react-bootstrap';
 import { useCallback, useEffect, useState } from 'react';
 import { getBoxes, removeBox, startBox, stopBox } from '../services/box';
 import { resolveName } from '../helpers/resolveName';
 import { BProgress } from '@bprogress/core';
 import { useToast } from '../contexts/ToastProvider';
+import { Navbar } from './components/Navbar';
 
 export interface Box {
   id: string;
@@ -69,22 +68,7 @@ export default function Home() {
 
   return (
     <>
-      <nav className="p-2 column-bg">
-        <div className="d-flex align-items-center justify-content-between w-100">
-          <div className="flex-grow-1 d-flex justify-content-center">
-            <div className="w-50">
-              <Search />
-            </div>
-          </div>
-
-          <div className="me-3">
-            <Link to="/store">
-              <Button>Add Application</Button>
-            </Link>
-          </div>
-        </div>
-      </nav>
-
+      <Navbar showBrandText />
       <div>
         {boxes?.map((box) => (
           <div key={box.id} className="border p-2 m-2">

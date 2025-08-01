@@ -6,6 +6,7 @@ import { ToastProvider } from './contexts/ToastProvider';
 const Home = lazy(() => import('./features/Home'));
 const TemplateList = lazy(() => import('./features/TemplateList'));
 const BoxAdd = lazy(() => import('./features/BoxAdd'));
+const NotFound = lazy(() => import('./features/NotFound'));
 
 function App() {
   return (
@@ -25,7 +26,3 @@ function App() {
 }
 
 export default App;
-
-function NotFound() {
-  return <div>Not Found</div>;
-}

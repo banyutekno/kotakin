@@ -1,10 +1,7 @@
 import { Button } from 'react-bootstrap';
 import { useCallback, useEffect, useState } from 'react';
-import { getBoxes, removeBox, startBox, stopBox } from '../services/box';
-import { resolveName } from '../helpers/resolveName';
-import { BProgress } from '@bprogress/core';
-import { useToast } from '../contexts/ToastProvider';
-import { CardBoxView } from './components/CardBoxView';
+import { getBoxes } from '../services/box';
+import { BoxCard } from './components/BoxCard';
 import { Search } from './components/Search';
 import { Link } from 'react-router-dom';
 
@@ -18,49 +15,11 @@ export interface Box {
 
 export default function Home() {
   const [boxes, setBoxes] = useState<Box[]>([]);
-  const { showToast } = useToast();
 
   const loadBoxes = useCallback(async () => {
     const boxes = await getBoxes();
     setBoxes(boxes);
   }, []);
-
-  const handleRemove = async (id: string) => {
-    BProgress.start();
-    try {
-      await removeBox(id);
-      showToast('Box removed', { variant: 'success' });
-      await loadBoxes();
-    } catch (err) {
-      if (err instanceof Error) {
-        showToast(`Failed to remove box, ${err.message}`);
-      }
-    } finally {
-      BProgress.done();
-    }
-  };
-
-  const handleStart = async (id: string) => {
-    BProgress.start();
-    try {
-      await startBox(id);
-      showToast('Box started', { variant: 'success' });
-      await loadBoxes();
-    } finally {
-      BProgress.done();
-    }
-  };
-
-  const handleStop = async (id: string) => {
-    BProgress.start();
-    try {
-      await stopBox(id);
-      showToast('Box stopped', { variant: 'success' });
-      await loadBoxes();
-    } finally {
-      BProgress.done();
-    }
-  };
 
   useEffect(() => {
     document.title = 'Kotakin';
@@ -96,19 +55,8 @@ export default function Home() {
       </nav>
 
       <div>
-        {boxes?.map((box) => (
-          <CardBoxView
-            key={box.id}
-            id={box.id}
-            name={box.name}
-            template={box.template}
-            kind={box.kind}
-            state={box.state}
-            onStart={handleStart}
-            onStop={handleStop}
-            onRemove={handleRemove}
-            resolveName={resolveName}
-          />
+        {boxes.map((box) => (
+          <BoxCard key={box.id} box={box} onReload={loadBoxes} />
         ))}
       </div>
     </>

@@ -66,15 +66,9 @@ export default function BoxAdd() {
       <div className="column-bg card rounded-4 px-4 py-4">
         <form onSubmit={handleSubmit(onSubmit)}>
           <div className="d-flex justify-content-between align-items-center mb-2">
-            <h2 className="mb-4 ">
+            <h2 className="mb-4">
               <i className="bi bi-box" /> Add New Box
             </h2>
-            <Link to="/store" className="text-decoration-none text-reset">
-              <Button variant="secondary">
-                <i className="bi bi-arrow-left-short fs-5" />
-                Back
-              </Button>
-            </Link>
           </div>
 
           <div className="mb-3 text-muted small">
@@ -109,10 +103,16 @@ export default function BoxAdd() {
             ))}
           </div>
           <div className="mt-4">
-            <Button type="submit" variant="primary" className="w-100">
-              <i className="bi bi-plus me-2" />
+            <Button type="submit" variant="primary" className="w-100 mb-2">
+              <i className="bi bi-plus " />
               Add Box
             </Button>
+            <Link to="/store" className="text-decoration-none text-reset">
+              <Button variant="danger" className="w-100">
+                <i className="bi bi-x " />
+                Cancel
+              </Button>
+            </Link>
           </div>
         </form>
       </div>

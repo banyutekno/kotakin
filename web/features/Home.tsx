@@ -69,13 +69,13 @@ export default function Home() {
 
   return (
     <>
-      <nav className="column-bg p-3">
+      <nav className="nav-store-bg p-3">
         <div className="container-fluid">
           <div className="row align-items-center">
             <div className="col-12 col-md-3 d-flex align-items-center justify-content-center justify-content-md-start mb-3 mb-md-0">
               <div className="d-flex align-items-center gap-2">
                 <i className="bi bi-box fs-2" />
-                <span className="fw-bold fs-2">Kotakin</span>
+                <span className="fs-2">Kotakin</span>
               </div>
             </div>
 

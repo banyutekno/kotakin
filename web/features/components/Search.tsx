@@ -9,9 +9,6 @@ export function Search() {
 
   return (
     <div className="input-group position-relative">
-      <span className="input-group-text">
-        <i className="bi bi-search text-secondary" />
-      </span>
       <input
         type="text"
         className="form-control pe-5"

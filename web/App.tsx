@@ -6,6 +6,7 @@ import { ToastProvider } from './contexts/ToastProvider';
 const Home = lazy(() => import('./features/Home'));
 const TemplateList = lazy(() => import('./features/TemplateList'));
 const BoxAdd = lazy(() => import('./features/BoxAdd'));
+const RepoAdd = lazy(() => import('./features/RepoAdd'));
 const NotFound = lazy(() => import('./features/NotFound'));
 
 function App() {
@@ -17,6 +18,7 @@ function App() {
             <Route path="/" element={<Home />} />
             <Route path="/store" element={<TemplateList />} />
             <Route path="/box/-/add" element={<BoxAdd />} />
+            <Route path="/repo/-/add" element={<RepoAdd />} />
             <Route path="/*" element={<NotFound />} />
           </Routes>
         </BrowserRouter>

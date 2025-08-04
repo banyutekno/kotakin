@@ -69,7 +69,7 @@ export default function Home() {
 
   return (
     <>
-      <nav className="nav-store-bg p-3">
+      <nav className="nav-bg p-3">
         <div className="container-fluid">
           <div className="row align-items-center">
             <div className="col-12 col-md-3 d-flex align-items-center justify-content-center justify-content-md-start mb-3 mb-md-0">

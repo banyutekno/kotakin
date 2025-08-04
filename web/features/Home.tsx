@@ -109,6 +109,10 @@ export default function Home() {
               <Button onClick={() => handleStop(box.id)}>Stop</Button>
 
               <Button onClick={() => handleRemove(box.id)}>Remove</Button>
+
+              <Link to={`/box/${box.id}/configure`}>
+                <Button>Configure</Button>
+              </Link>
             </div>
           </div>
         ))}

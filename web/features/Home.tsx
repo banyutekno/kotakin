@@ -69,26 +69,27 @@ export default function Home() {
 
   return (
     <>
-      <nav className="nav-bg p-3">
+      <nav className="navbar nav-bg">
         <div className="container-fluid">
-          <div className="row align-items-center">
-            <div className="col-12 col-md-3 d-flex align-items-center justify-content-center justify-content-md-start mb-3 mb-md-0">
-              <div className="d-flex align-items-center gap-2">
-                <i className="bi bi-box fs-2" />
-                <span className="fs-2">Kotakin</span>
-              </div>
+          <div className="row w-100 g-0">
+            <div className="col-6 col-md-3 text-start order-1 order-md-1">
+              <a className="navbar-brand d-flex align-items-center" href="/">
+                <i className="bi bi-box me-2" />
+                <span>Kotakin</span>
+              </a>
             </div>
 
-            <div className="col-12 col-md-6 mb-3 mb-md-0 d-flex justify-content-center">
-              <div className="w-100">
-                <Search />
-              </div>
-            </div>
-
-            <div className="col-12 col-md-3 d-flex justify-content-center justify-content-md-end">
+            <div className="col-6 col-md-3 text-end order-2 order-md-3">
               <Link to="/store">
-                <Button>Add Application</Button>
+                <Button>
+                  <i className="bi bi-plus me-1" />
+                  Add Application
+                </Button>
               </Link>
+            </div>
+
+            <div className="col text-center order-3 order-md-2 mt-3 mt-md-0">
+              <Search />
             </div>
           </div>
         </div>
@@ -108,11 +109,13 @@ export default function Home() {
 
               <Button onClick={() => handleStop(box.id)}>Stop</Button>
 
-              <Button onClick={() => handleRemove(box.id)}>Remove</Button>
+              {box.template && <Button onClick={() => handleRemove(box.id)}>Remove</Button>}
 
-              <Link to={`/box/${box.id}/configure`}>
-                <Button>Configure</Button>
-              </Link>
+              {box.template && (
+                <Link to={`/box/${box.id}/configure`}>
+                  <Button>Configure</Button>
+                </Link>
+              )}
             </div>
           </div>
         ))}

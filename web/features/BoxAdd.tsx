@@ -1,9 +1,10 @@
 import { useEffect, useState } from 'react';
 import { Button, FormLabel } from 'react-bootstrap';
 import { useForm, type SubmitHandler } from 'react-hook-form';
-import { Link, useNavigate, useSearchParams } from 'react-router-dom';
+import { useSearchParams } from 'react-router-dom';
 import { getTemplate } from '../services/template';
 import { addBox } from '../services/box';
+import { useNav } from '../hooks/nav';
 
 interface FormValues {
   name: string;
@@ -28,21 +29,36 @@ export default function BoxAdd() {
     handleSubmit,
     formState: { errors },
   } = useForm<FormValues>();
-  const navigate = useNavigate();
+  const { popPage } = useNav();
   const [searchParams] = useSearchParams();
   const templateId = searchParams.get('template');
   const [template, setTemplate] = useState<Template>();
 
   useEffect(() => {
+    const abortController = new AbortController();
+    const abort = () => {
+      abortController.abort();
+    };
+
     document.title = 'Add Box | Kotakin';
 
     const loadTemplate = async () => {
       if (!templateId) return;
-      const template = await getTemplate(templateId);
-      setTemplate(template);
+
+      try {
+        const template = await getTemplate(templateId, abortController.signal);
+        setTemplate(template);
+      } catch (err) {
+        if (err instanceof DOMException && err.name === 'AbortError') {
+          return;
+        }
+        throw err;
+      }
     };
 
     loadTemplate();
+
+    return abort;
   }, [templateId]);
 
   const onSubmit: SubmitHandler<FormValues> = async (values) => {
@@ -58,7 +74,7 @@ export default function BoxAdd() {
       env,
     });
 
-    navigate('/');
+    popPage('/');
   };
 
   return (
@@ -69,12 +85,11 @@ export default function BoxAdd() {
             <h2 className="mb-4 ">
               <i className="bi bi-box" /> Add New Box
             </h2>
-            <Link to="/store" className="text-decoration-none text-reset">
-              <Button variant="secondary">
-                <i className="bi bi-arrow-left-short fs-5" />
-                Back
-              </Button>
-            </Link>
+
+            <Button variant="secondary" onClick={() => popPage('/')}>
+              <i className="bi bi-arrow-left-short fs-5" />
+              Back
+            </Button>
           </div>
 
           <div className="mb-3 text-muted small">

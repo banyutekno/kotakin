@@ -1,9 +1,10 @@
 import { useEffect, useState } from 'react';
 import { Button, FormLabel } from 'react-bootstrap';
 import { useForm, type SubmitHandler } from 'react-hook-form';
-import { Link, useNavigate, useParams } from 'react-router-dom';
+import { useParams } from 'react-router-dom';
 import { getTemplate } from '../services/template';
 import { configureBox, getBox } from '../services/box';
+import { useNav } from '../hooks/nav';
 
 interface FormValues {
   name: string;
@@ -29,7 +30,7 @@ export default function BoxConfigure() {
     reset,
     formState: { errors },
   } = useForm<FormValues>();
-  const navigate = useNavigate();
+  const { popPage } = useNav();
   const { id } = useParams();
   const [template, setTemplate] = useState<Template>();
 
@@ -78,7 +79,7 @@ export default function BoxConfigure() {
 
     await configureBox(id, { name, env });
 
-    navigate('/');
+    popPage('/');
   };
 
   return (
@@ -89,12 +90,11 @@ export default function BoxConfigure() {
             <h2 className="mb-4 ">
               <i className="bi bi-box" /> Configure Box
             </h2>
-            <Link to="/store" className="text-decoration-none text-reset">
-              <Button variant="secondary">
-                <i className="bi bi-arrow-left-short fs-5" />
-                Back
-              </Button>
-            </Link>
+
+            <Button variant="secondary" onClick={() => popPage('/')}>
+              <i className="bi bi-arrow-left-short fs-5" />
+              Back
+            </Button>
           </div>
 
           <div className="mb-3 text-muted small">

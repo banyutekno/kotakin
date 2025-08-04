@@ -4,7 +4,8 @@ import { getBoxes, removeBox, startBox, stopBox } from '../services/box';
 import { resolveName } from '../helpers/resolveName';
 import { BProgress } from '@bprogress/core';
 import { useToast } from '../contexts/ToastProvider';
-import { Navbar } from './components/Navbar';
+import { Search } from './components/Search';
+import { Link } from 'react-router-dom';
 
 export interface Box {
   id: string;
@@ -68,7 +69,31 @@ export default function Home() {
 
   return (
     <>
-      <Navbar showBrandText />
+      <nav className="column-bg p-3">
+        <div className="container-fluid">
+          <div className="row align-items-center">
+            <div className="col-12 col-md-3 d-flex align-items-center justify-content-center justify-content-md-start mb-3 mb-md-0">
+              <div className="d-flex align-items-center gap-2">
+                <i className="bi bi-box fs-2" />
+                <span className="fw-bold fs-2">Kotakin</span>
+              </div>
+            </div>
+
+            <div className="col-12 col-md-6 mb-3 mb-md-0 d-flex justify-content-center">
+              <div className="w-100">
+                <Search />
+              </div>
+            </div>
+
+            <div className="col-12 col-md-3 d-flex justify-content-center justify-content-md-end">
+              <Link to="/store">
+                <Button>Add Application</Button>
+              </Link>
+            </div>
+          </div>
+        </div>
+      </nav>
+
       <div>
         {boxes?.map((box) => (
           <div key={box.id} className="border p-2 m-2">

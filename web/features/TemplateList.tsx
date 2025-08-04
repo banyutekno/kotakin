@@ -24,7 +24,7 @@ export default function TemplateList() {
 
   return (
     <>
-      <nav className="navbar nav-bg">
+      <nav className="navbar">
         <div className="container-fluid">
           <div className="row w-100 g-0">
             <div className="col-6 col-md-3 text-start order-1 order-md-1">

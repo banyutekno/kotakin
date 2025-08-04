@@ -83,23 +83,28 @@ export default function BoxConfigure() {
   };
 
   return (
-    <div className="container py-5">
-      <div className="column-bg card rounded-4 px-4 py-4">
-        <form onSubmit={handleSubmit(onSubmit)}>
-          <div className="d-flex justify-content-between align-items-center mb-2">
-            <h2 className="mb-4 ">
-              <i className="bi bi-box" /> Configure Box
-            </h2>
-
-            <Button variant="secondary" onClick={() => popPage('/')}>
-              <i className="bi bi-arrow-left-short fs-5" />
-              Back
-            </Button>
+    <>
+      <nav className="navbar">
+        <div className="container-fluid">
+          <div className="row w-100 g-0">
+            <div className="col-6 col-md-3 text-start order-1 order-md-1">
+              <div className="d-flex align-items-center">
+                <Button onClick={() => popPage('/')} variant="link" className="text-body">
+                  <i className="bi bi-arrow-left" />
+                </Button>
+                <span>Configure Box</span>
+              </div>
+            </div>
           </div>
+        </div>
+      </nav>
 
+      <div className="container-fluid">
+        <form onSubmit={handleSubmit(onSubmit)}>
           <div className="mb-3 text-muted small">
             <strong>Box ID:</strong> {id}
           </div>
+
           <div className="mb-3">
             <FormLabel>Name</FormLabel>
             <input
@@ -110,6 +115,7 @@ export default function BoxConfigure() {
             />
             {errors.name && <div className="invalid-feedback">{errors.name.message}</div>}
           </div>
+
           <div>
             {(template?.env_configs ?? []).map((envConfig) => (
               <div key={envConfig.name} className="mb-3">
@@ -128,14 +134,15 @@ export default function BoxConfigure() {
               </div>
             ))}
           </div>
-          <div className="mt-4">
-            <Button type="submit" variant="primary" className="w-100">
+
+          <div className="mb-3">
+            <Button type="submit" variant="primary">
               <i className="bi bi-gear me-2" />
               Configure Box
             </Button>
           </div>
         </form>
       </div>
-    </div>
+    </>
   );
 }

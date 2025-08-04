@@ -69,14 +69,14 @@ export default function Home() {
 
   return (
     <>
-      <nav className="navbar nav-bg">
+      <nav className="navbar">
         <div className="container-fluid">
           <div className="row w-100 g-0">
             <div className="col-6 col-md-3 text-start order-1 order-md-1">
-              <a className="navbar-brand d-flex align-items-center" href="/">
+              <span className="navbar-brand d-flex align-items-center">
                 <i className="bi bi-box me-2" />
                 <span>Kotakin</span>
-              </a>
+              </span>
             </div>
 
             <div className="col-6 col-md-3 text-end order-2 order-md-3">
@@ -95,7 +95,7 @@ export default function Home() {
         </div>
       </nav>
 
-      <div>
+      <div className="container-fluid">
         {boxes?.map((box) => (
           <div key={box.id} className="border p-2 m-2">
             <img src={`/repo-assets/${box.template}/logo.png`} alt="" />

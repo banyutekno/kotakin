@@ -4,6 +4,7 @@ import { getBoxes, removeBox, startBox, stopBox } from '../services/box';
 import { resolveName } from '../helpers/resolveName';
 import { BProgress } from '@bprogress/core';
 import { useToast } from '../contexts/ToastProvider';
+import { CardBoxView } from './components/CardBoxView';
 import { Search } from './components/Search';
 import { Link } from 'react-router-dom';
 
@@ -96,21 +97,18 @@ export default function Home() {
 
       <div>
         {boxes?.map((box) => (
-          <div key={box.id} className="border p-2 m-2">
-            <img src={`/repo-assets/${box.template}/logo.png`} alt="" />
-            <h4>{box.name ?? resolveName(box.id)}</h4>
-            <p>
-              {box.template ?? '(unmanaged)'} | {box.kind} | {box.state}
-            </p>
-
-            <div>
-              <Button onClick={() => handleStart(box.id)}>Start</Button>
-
-              <Button onClick={() => handleStop(box.id)}>Stop</Button>
-
-              <Button onClick={() => handleRemove(box.id)}>Remove</Button>
-            </div>
-          </div>
+          <CardBoxView
+            key={box.id}
+            id={box.id}
+            name={box.name}
+            template={box.template}
+            kind={box.kind}
+            state={box.state}
+            onStart={handleStart}
+            onStop={handleStop}
+            onRemove={handleRemove}
+            resolveName={resolveName}
+          />
         ))}
       </div>
     </>

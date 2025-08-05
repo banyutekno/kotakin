@@ -6,6 +6,7 @@ import (
 
 	"github.com/banyutekno/kotakin/pkg/domain"
 	"github.com/banyutekno/kotakin/pkg/utils"
+	"github.com/joho/godotenv"
 )
 
 type Kind string
@@ -23,11 +24,12 @@ type ComposeConfig struct {
 }
 
 type Box struct {
-	ID            string `json:"id"`
-	Kind          Kind   `json:"kind"`
-	State         State  `json:"state"`
-	Name          string `json:"name,omitempty"`
-	Template      string `json:"template,omitempty"`
+	ID            string            `json:"id"`
+	Kind          Kind              `json:"kind"`
+	State         State             `json:"state"`
+	Name          string            `json:"name,omitempty"`
+	Template      string            `json:"template,omitempty"`
+	Env           map[string]string `json:"env,omitempty"`
 	composeConfig ComposeConfig
 }
 
@@ -61,6 +63,12 @@ func FromDir(boxDir string) (*Box, error) {
 		State:    "unknown",
 		Name:     config.Name,
 		Template: config.Template,
+	}
+
+	envFile := filepath.Join(boxDir, ".env")
+	envMap, err := godotenv.Read(envFile)
+	if err == nil {
+		box.Env = envMap
 	}
 
 	return box, nil

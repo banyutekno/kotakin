@@ -58,6 +58,26 @@ func serveApiBox(r chi.Router, boxService *box.Service, templateService *templat
 		respondJson(w, 200, box)
 	})
 
+	r.Patch("/box/{id}", func(w http.ResponseWriter, r *http.Request) {
+		ctx := r.Context()
+		id := chi.URLParam(r, "id")
+
+		var cmd box.UpdateCommand
+		if err := parseBody(r, &cmd); err != nil {
+			respondErr(w, err)
+			return
+		}
+		cmd.ID = id
+
+		err := boxService.Update(ctx, cmd)
+		if err != nil {
+			respondErr(w, err)
+			return
+		}
+
+		respondJson(w, 200, nil)
+	})
+
 	r.Post("/box/{id}/start", func(w http.ResponseWriter, r *http.Request) {
 		ctx := r.Context()
 		id := chi.URLParam(r, "id")

@@ -67,7 +67,7 @@ export function BoxCard({ box, onActionComplete }: BoxCardProps) {
     <div className="rounded border p-3 m-3 mb-3">
       <div className="d-flex justify-content-between align-items-start">
         <div className="me-3">
-          <Icon src={`/repo-assets/${box.template}/logo.png`} alt={box.name || box.id} />
+          <Icon src={box.template ? `/repo-assets/${box.template}/logo.png` : ''} alt={box.name || box.id} />
         </div>
         <div className="flex-grow-1">
           <div className="d-flex justify-content-between align-items-center mb-2">

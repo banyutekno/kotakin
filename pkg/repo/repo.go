@@ -18,8 +18,7 @@ type Repo struct {
 func FromDir(repoDir string) (*Repo, error) {
 	id := filepath.Base(repoDir)
 	repo := &Repo{
-		ID:   id,
-		Name: id,
+		ID: id,
 	}
 
 	_, err := os.Stat(repoDir)

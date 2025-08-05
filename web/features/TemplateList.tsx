@@ -6,6 +6,7 @@ import { useNav } from '../hooks/nav';
 import { Search } from './components/Search';
 import { Icon } from './components/Icon';
 import { getRepos } from '../services/repo';
+import { resolveName } from '../helpers/resolveName';
 
 interface Template {
   id: string;
@@ -36,13 +37,27 @@ export default function TemplateList() {
     document.title = 'Templates | Kotakin';
 
     const loadRepos = async () => {
-      const repos = await getRepos(abortController.signal);
-      setRepos(repos);
+      try {
+        const repos = await getRepos(abortController.signal);
+        setRepos(repos);
+      } catch (err) {
+        if (err instanceof DOMException && err.name === 'AbortError') {
+          return;
+        }
+        throw err;
+      }
     };
 
     const loadTemplates = async () => {
-      const templates = await getTemplates(abortController.signal);
-      setAllTemplates(templates);
+      try {
+        const templates = await getTemplates(abortController.signal);
+        setAllTemplates(templates);
+      } catch (err) {
+        if (err instanceof DOMException && err.name === 'AbortError') {
+          return;
+        }
+        throw err;
+      }
     };
 
     loadRepos();
@@ -90,7 +105,7 @@ export default function TemplateList() {
       <div className="container-fluid">
         {repos.map((repo) => (
           <div key={repo.id} className="mb-4">
-            <h4>{repo.name || repo.id}</h4>
+            <h4>{repo.name || resolveName(repo.id)}</h4>
             <div className="d-flex flex-column gap-3">
               <TemplateCards templates={repoTemplates(repo.id)} />
             </div>

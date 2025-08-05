@@ -1,4 +1,4 @@
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 
 interface IconProps {
   src: string;
@@ -30,7 +30,7 @@ export const Icon = ({ src, alt, size = 120, className }: IconProps) => {
         fontSize: size * 0.4,
       }}
     >
-      {!hasError ? (
+      {src && !hasError ? (
         <img src={src} alt={alt} className="w-100 object-cover" onError={() => setHasError(true)} />
       ) : (
         <span>{getInitials(alt)}</span>

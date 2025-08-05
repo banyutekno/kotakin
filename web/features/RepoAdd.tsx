@@ -2,6 +2,7 @@ import { useForm, type SubmitHandler } from 'react-hook-form';
 import { useNavigate, Link } from 'react-router-dom';
 import { Button, FormLabel } from 'react-bootstrap';
 import { addRepo } from '../services/repo';
+import { useNav } from '../hooks/nav';
 
 interface FormValues {
   url: string;
@@ -15,6 +16,7 @@ export default function RepoAdd() {
   } = useForm<FormValues>();
 
   const navigate = useNavigate();
+  const { popPage } = useNav();
 
   const onSubmit: SubmitHandler<FormValues> = async (values) => {
     await addRepo(values.url);
@@ -49,7 +51,7 @@ export default function RepoAdd() {
             </Button>
 
             <Link to="/store">
-              <Button type="button" variant="danger" className="w-100">
+              <Button type="button" variant="danger" className="w-100" onClick={() => popPage('/store')}>
                 <i className="bi bi-x" />
                 Cancel
               </Button>

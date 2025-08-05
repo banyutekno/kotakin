@@ -133,8 +133,8 @@ export default function TemplateList() {
               </div>
             </div>
 
-            <div className="d-flex gap-2 mb-3">
-              <Button onClick={() => handleUpdate(repo.id)}>
+            <div className="mb-3">
+              <Button className="me-2" onClick={() => handleUpdate(repo.id)}>
                 <i className="bi bi-arrow-repeat me-1" />
                 Update
               </Button>

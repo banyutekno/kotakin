@@ -50,6 +50,7 @@ export default function TemplateList() {
     BProgress.start();
     try {
       await updateRepo(id);
+      showToast('Repository updated', { variant: 'success' });
       await loadAll();
     } catch (err) {
       showToast(`Failed to update, ${err}`);
@@ -62,6 +63,7 @@ export default function TemplateList() {
     BProgress.start();
     try {
       await removeRepo(id);
+      showToast('Repository removed');
       await loadAll();
     } catch (err) {
       showToast(`Failed to remove, ${err}`);

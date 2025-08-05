@@ -13,14 +13,14 @@ export const Icon = ({ src, alt, size = 120, className }: IconProps) => {
 
   const getInitials = (name: string) =>
     name
-      .split(' ')
+      .split(/[\s-]/)
       .map((word) => word[0]?.toUpperCase())
       .join('')
       .slice(0, 2);
 
   return (
     <div
-      className={`flex items-center justify-center bg-gray-300 rounded-full text-white font-bold ${className || ''}`}
+      className={`flex items-center justify-center ${className || ''}`}
       style={{
         width: sizeInPx,
         height: sizeInPx,
@@ -31,12 +31,7 @@ export const Icon = ({ src, alt, size = 120, className }: IconProps) => {
       }}
     >
       {!hasError ? (
-        <img
-          src={src}
-          alt={alt}
-          className="w-full h-full object-cover rounded-full"
-          onError={() => setHasError(true)}
-        />
+        <img src={src} alt={alt} className="w-full h-full object-cover" onError={() => setHasError(true)} />
       ) : (
         <span>{getInitials(alt)}</span>
       )}

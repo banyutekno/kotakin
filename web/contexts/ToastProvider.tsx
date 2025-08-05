@@ -59,7 +59,7 @@ export function ToastProvider({ children }: { children: ReactNode }) {
             <Toast.Header>
               <strong className="me-auto text-capitalize">{toast.variant}</strong>
             </Toast.Header>
-            <Toast.Body className="text-white">{toast.message}</Toast.Body>
+            <Toast.Body>{toast.message}</Toast.Body>
           </Toast>
         ))}
       </ToastContainer>

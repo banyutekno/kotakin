@@ -4,14 +4,8 @@ import { startBox, stopBox, removeBox } from '../../services/box';
 import { resolveName } from '../../helpers/resolveName';
 import { useToast } from '../../contexts/ToastProvider';
 import { Link } from 'react-router-dom';
-
-interface Box {
-  id: string;
-  name: string;
-  template: string;
-  kind: string;
-  state: string;
-}
+import type { Box } from '../types';
+import { Icon } from './Icon';
 
 interface BoxCardProps {
   box: Box;
@@ -70,40 +64,47 @@ export function BoxCard({ box, onActionComplete }: BoxCardProps) {
   };
 
   return (
-    <div className="text-light p-3 rounded shadow-sm mb-3 border p-2 m-2">
-      <div className="d-flex justify-content-between align-items-center mb-2">
-        <div className="d-flex align-items-center">
-          <h4>{box.name ?? resolveName(box.id)}</h4>
+    <div className="rounded border p-3 m-3 mb-3">
+      <div className="d-flex justify-content-between align-items-start">
+        <div className="me-3">
+          <Icon src={`/repo-assets/${box.template}/logo.png`} alt={box.name || box.id} />
         </div>
-        <Badge bg={badgeVariant(box.state)} className="text-capitalize">
-          {box.state}
-        </Badge>
-      </div>
+        <div className="flex-grow-1">
+          <div className="d-flex justify-content-between align-items-center mb-2">
+            <div className="d-flex align-items-center">
+              <h4>{box.name ?? resolveName(box.id)}</h4>
+            </div>
+            <Badge bg={badgeVariant(box.state)} className="text-capitalize">
+              {box.state}
+            </Badge>
+          </div>
 
-      <div className="text-muted mb-3">
-        {box.template ?? '(unmanaged)'} | {box.kind}
-      </div>
+          <div className="text-muted mb-3">
+            {box.template ?? '(unmanaged)'} | {box.kind}
+          </div>
 
-      <div className="d-flex align-items-center">
-        <div className="d-flex gap-2">
-          <Button variant="outline-light" size="sm" onClick={handleStart}>
-            <i className="bi bi-play-fill me-1" />
-            Start
-          </Button>
-          <Button variant="outline-light" size="sm" onClick={handleStop}>
-            <i className="bi bi-stop-fill me-1" />
-            Stop
-          </Button>
-          <Link to={`/box/${box.id}/configure`}>
-            <Button variant="outline-light" size="sm">
-              <i className="bi bi-gear-fill me-1" />
-              Configure
+          <div className="d-flex align-items-center">
+            <div className="d-flex gap-2">
+              <Button variant="outline-light" size="sm" onClick={handleStart}>
+                <i className="bi bi-play-fill me-1" />
+                Start
+              </Button>
+              <Button variant="outline-light" size="sm" onClick={handleStop}>
+                <i className="bi bi-stop-fill me-1" />
+                Stop
+              </Button>
+              <Link to={`/box/${box.id}/configure`}>
+                <Button variant="outline-light" size="sm">
+                  <i className="bi bi-gear-fill me-1" />
+                  Configure
+                </Button>
+              </Link>
+            </div>
+            <Button variant="danger" size="sm" className="ms-auto" onClick={handleRemove}>
+              <i className="bi bi-trash-fill" />
             </Button>
-          </Link>
+          </div>
         </div>
-        <Button variant="danger" size="sm" className="ms-auto" onClick={handleRemove}>
-          <i className="bi bi-trash-fill" />
-        </Button>
       </div>
     </div>
   );

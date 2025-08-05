@@ -4,14 +4,7 @@ import { getBoxes } from '../services/box';
 import { BoxCard } from './components/BoxCard';
 import { Search } from './components/Search';
 import { Link } from 'react-router-dom';
-
-export interface Box {
-  id: string;
-  name?: string;
-  kind: string;
-  template: string;
-  state: string;
-}
+import type { Box } from './types';
 
 export default function Home() {
   const [allBoxes, setAllBoxes] = useState<Box[]>([]);

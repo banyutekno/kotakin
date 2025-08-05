@@ -124,12 +124,10 @@ export default function BoxAdd() {
           </div>
 
           <div className="mb-3">
-            <Link to="/store" className="text-decoration-none text-reset">
-              <Button type="submit" variant="primary">
-                <i className="bi bi-plus me-2" />
-                Add Box
-              </Button>
-            </Link>
+            <Button type="submit" variant="primary">
+              <i className="bi bi-plus me-2" />
+              Add Box
+            </Button>
           </div>
         </form>
       </div>

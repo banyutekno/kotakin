@@ -60,13 +60,18 @@ export default function TemplateList() {
         </div>
       </nav>
 
-      <div>
+      <div className="d-flex flex-column gap-3 p-2">
         {templates.map((template) => (
-          <div key={template.id} className="border p-2 m-2">
-            <img src={`/repo-assets/${template.id}/logo.png`} alt="" />
-            {template.id}
-            <Link to={`/box/-/add?template=${template.id}`} className="text-decoration-none text-reset">
-              <Button>Install</Button>
+          <div key={template.id} className="card flex-row align-items-center p-3">
+            <img
+              src={`/repo-assets/${template.id}/logo.png`}
+              alt={template.id}
+              className="me-3"
+              style={{ width: '30rem', height: '9rem', objectFit: 'contain' }}
+            />
+
+            <Link to={`/box/-/add?template=${template.id}`} className="text-decoration-none">
+              <Button variant="primary">Install</Button>
             </Link>
           </div>
         ))}

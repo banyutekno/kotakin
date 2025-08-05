@@ -7,10 +7,13 @@ import { Search } from './components/Search';
 
 interface Template {
   id: string;
+  name?: string;
 }
 
 export default function TemplateList() {
   const { popPage } = useNav();
+  const [search, setSearch] = useState('');
+  const [allTemplates, setAllTemplates] = useState<Template[]>([]);
   const [templates, setTemplates] = useState<Template[]>([]);
 
   useEffect(() => {
@@ -18,9 +21,17 @@ export default function TemplateList() {
 
     (async () => {
       const templates = await getTemplates();
-      setTemplates(templates);
+      setAllTemplates(templates);
     })();
   }, []);
+
+  useEffect(() => {
+    console.log(search);
+    const templates = allTemplates.filter((template) => {
+      return template.id.includes(search) || template.name?.includes(search);
+    });
+    setTemplates(templates);
+  }, [search, allTemplates]);
 
   return (
     <>
@@ -43,7 +54,7 @@ export default function TemplateList() {
             </div>
 
             <div className="col text-center order-3 order-md-2 mt-3 mt-md-0">
-              <Search />
+              <Search value={search} onChange={setSearch} />
             </div>
           </div>
         </div>

@@ -7,18 +7,20 @@ import { Link } from 'react-router-dom';
 
 export interface Box {
   id: string;
-  name: string;
+  name?: string;
   kind: string;
   template: string;
   state: string;
 }
 
 export default function Home() {
+  const [allBoxes, setAllBoxes] = useState<Box[]>([]);
   const [boxes, setBoxes] = useState<Box[]>([]);
+  const [search, setSearch] = useState('');
 
   const loadBoxes = useCallback(async () => {
     const boxes = await getBoxes();
-    setBoxes(boxes);
+    setAllBoxes(boxes);
   }, []);
 
   useEffect(() => {
@@ -26,6 +28,11 @@ export default function Home() {
 
     loadBoxes();
   }, [loadBoxes]);
+
+  useEffect(() => {
+    const boxes = allBoxes.filter((box) => box.id.includes(search) || box.name?.includes(search));
+    setBoxes(boxes);
+  }, [allBoxes, search]);
 
   return (
     <>
@@ -49,7 +56,7 @@ export default function Home() {
             </div>
 
             <div className="col text-center order-3 order-md-2 mt-3 mt-md-0">
-              <Search />
+              <Search value={search} onChange={setSearch} />
             </div>
           </div>
         </div>

@@ -51,7 +51,7 @@ export default function RepoAdd() {
             </Button>
 
             <Link to="/store">
-              <Button type="button" variant="danger" className="w-100" onClick={() => popPage('/')}>
+              <Button type="button" variant="danger" className="w-100" onClick={() => popPage('/store')}>
                 <i className="bi bi-x" />
                 Cancel
               </Button>

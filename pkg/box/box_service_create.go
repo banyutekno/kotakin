@@ -9,8 +9,8 @@ import (
 )
 
 type CreateCommand struct {
-	Name     string            `json:"name"`
 	Template string            `json:"template"`
+	Name     string            `json:"name"`
 	Env      map[string]string `json:"env"`
 }
 

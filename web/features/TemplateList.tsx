@@ -4,6 +4,7 @@ import { useEffect, useState } from 'react';
 import { getTemplates } from '../services/template';
 import { useNav } from '../hooks/nav';
 import { Search } from './components/Search';
+import { Icon } from './components/Icon';
 
 interface Template {
   id: string;
@@ -26,7 +27,6 @@ export default function TemplateList() {
   }, []);
 
   useEffect(() => {
-    console.log(search);
     const templates = allTemplates.filter((template) => {
       return template.id.includes(search) || template.name?.includes(search);
     });
@@ -63,13 +63,7 @@ export default function TemplateList() {
       <div className="d-flex flex-column gap-3 p-2">
         {templates.map((template) => (
           <div key={template.id} className="card flex-row align-items-center p-3">
-            <img
-              src={`/repo-assets/${template.id}/logo.png`}
-              alt={template.id}
-              className="me-3"
-              style={{ width: '30rem', height: '9rem', objectFit: 'contain' }}
-            />
-
+            <Icon src={`/repo-assets/${template.id}/logo.png`} alt={template.id} className="me-3" />
             <Link to={`/box/-/add?template=${template.id}`} className="text-decoration-none">
               <Button variant="primary">Install</Button>
             </Link>

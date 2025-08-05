@@ -1,7 +1,6 @@
 package server
 
 import (
-	"log"
 	"net/http"
 	"os"
 
@@ -13,7 +12,6 @@ func ServeFiles(r chi.Router, root string, repoDir string) {
 	repoAssetsFs := http.StripPrefix("/repo-assets/", http.FileServer(http.Dir(repoDir)))
 
 	r.Get("/repo-assets/*", func(w http.ResponseWriter, r *http.Request) {
-		log.Println("xxxx", r.RequestURI)
 		repoAssetsFs.ServeHTTP(w, r)
 	})
 

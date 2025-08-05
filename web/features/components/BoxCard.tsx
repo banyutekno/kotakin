@@ -3,6 +3,7 @@ import { BProgress } from '@bprogress/core';
 import { startBox, stopBox, removeBox } from '../../services/box';
 import { resolveName } from '../../helpers/resolveName';
 import { useToast } from '../../contexts/ToastProvider';
+import { Link } from 'react-router-dom';
 
 interface Box {
   id: string;
@@ -14,7 +15,7 @@ interface Box {
 
 interface BoxCardProps {
   box: Box;
-  onReload: () => void;
+  onActionComplete: () => void;
 }
 
 function badgeVariant(state: string) {
@@ -28,7 +29,7 @@ function badgeVariant(state: string) {
   }
 }
 
-export function BoxCard({ box, onReload }: BoxCardProps) {
+export function BoxCard({ box, onActionComplete }: BoxCardProps) {
   const { showToast } = useToast();
 
   const handleStart = async () => {
@@ -36,7 +37,7 @@ export function BoxCard({ box, onReload }: BoxCardProps) {
     try {
       await startBox(box.id);
       showToast('Box started', { variant: 'success' });
-      onReload();
+      onActionComplete();
     } finally {
       BProgress.done();
     }
@@ -46,8 +47,8 @@ export function BoxCard({ box, onReload }: BoxCardProps) {
     BProgress.start();
     try {
       await stopBox(box.id);
-      showToast('Box stopped', { variant: 'success' });
-      onReload();
+      showToast('Box stopped', { variant: 'danger' });
+      onActionComplete();
     } finally {
       BProgress.done();
     }
@@ -57,8 +58,8 @@ export function BoxCard({ box, onReload }: BoxCardProps) {
     BProgress.start();
     try {
       await removeBox(box.id);
-      showToast('Box removed', { variant: 'success' });
-      onReload();
+      showToast('Box removed', { variant: 'danger' });
+      onActionComplete();
     } catch (err) {
       if (err instanceof Error) {
         showToast(`Failed to remove box, ${err.message}`);
@@ -93,6 +94,12 @@ export function BoxCard({ box, onReload }: BoxCardProps) {
             <i className="bi bi-stop-fill me-1" />
             Stop
           </Button>
+          <Link to={`/box/${box.id}/configure`}>
+            <Button variant="outline-light" size="sm">
+              <i className="bi bi-gear-fill me-1" />
+              Configure
+            </Button>
+          </Link>
         </div>
         <Button variant="danger" size="sm" className="ms-auto" onClick={handleRemove}>
           <i className="bi bi-trash-fill" />

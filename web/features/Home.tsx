@@ -55,33 +55,9 @@ export default function Home() {
         </div>
       </nav>
 
-
       <div>
         {boxes.map((box) => (
-          <BoxCard key={box.id} box={box} onReload={loadBoxes} />
-      <div className="container-fluid">
-        {boxes?.map((box) => (
-          <div key={box.id} className="border p-2 m-2">
-            <img src={`/repo-assets/${box.template}/logo.png`} alt="" />
-            <h4>{box.name ?? resolveName(box.id)}</h4>
-            <p>
-              {box.template ?? '(unmanaged)'} | {box.kind} | {box.state}
-            </p>
-
-            <div>
-              <Button onClick={() => handleStart(box.id)}>Start</Button>
-
-              <Button onClick={() => handleStop(box.id)}>Stop</Button>
-
-              {box.template && <Button onClick={() => handleRemove(box.id)}>Remove</Button>}
-
-              {box.template && (
-                <Link to={`/box/${box.id}/configure`}>
-                  <Button>Configure</Button>
-                </Link>
-              )}
-            </div>
-          </div>
+          <BoxCard key={box.id} box={box} onActionComplete={loadBoxes} />
         ))}
       </div>
     </>

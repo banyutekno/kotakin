@@ -5,33 +5,60 @@ import { getTemplates } from '../services/template';
 import { useNav } from '../hooks/nav';
 import { Search } from './components/Search';
 import { Icon } from './components/Icon';
+import { getRepos } from '../services/repo';
 
 interface Template {
   id: string;
+  repo: string;
+  slug: string;
   name?: string;
+}
+
+interface Repo {
+  id: string;
+  name: string;
+  maintainer?: string;
 }
 
 export default function TemplateList() {
   const { popPage } = useNav();
   const [search, setSearch] = useState('');
   const [allTemplates, setAllTemplates] = useState<Template[]>([]);
-  const [templates, setTemplates] = useState<Template[]>([]);
+  const [filteredTemplates, setFilteredTemplates] = useState<Template[]>([]);
+  const [repos, setRepos] = useState<Repo[]>([]);
 
   useEffect(() => {
+    const abortController = new AbortController();
+    const abort = () => {
+      abortController.abort();
+    };
+
     document.title = 'Templates | Kotakin';
 
-    (async () => {
-      const templates = await getTemplates();
+    const loadRepos = async () => {
+      const repos = await getRepos(abortController.signal);
+      setRepos(repos);
+    };
+
+    const loadTemplates = async () => {
+      const templates = await getTemplates(abortController.signal);
       setAllTemplates(templates);
-    })();
+    };
+
+    loadRepos();
+    loadTemplates();
+
+    return abort;
   }, []);
 
   useEffect(() => {
     const templates = allTemplates.filter((template) => {
       return template.id.includes(search) || template.name?.includes(search);
     });
-    setTemplates(templates);
+    setFilteredTemplates(templates);
   }, [search, allTemplates]);
+
+  const repoTemplates = (repoId: string) => filteredTemplates.filter((template) => template.repo === repoId);
 
   return (
     <>
@@ -60,16 +87,38 @@ export default function TemplateList() {
         </div>
       </nav>
 
-      <div className="d-flex flex-column gap-3 p-2">
-        {templates.map((template) => (
-          <div key={template.id} className="card flex-row align-items-center p-3">
-            <Icon src={`/repo-assets/${template.id}/logo.png`} alt={template.id} className="me-3" />
-            <Link to={`/box/-/add?template=${template.id}`} className="text-decoration-none">
-              <Button variant="primary">Install</Button>
-            </Link>
+      <div className="container-fluid">
+        {repos.map((repo) => (
+          <div key={repo.id} className="mb-4">
+            <h4>{repo.name || repo.id}</h4>
+            <div className="d-flex flex-column gap-3">
+              <TemplateCards templates={repoTemplates(repo.id)} />
+            </div>
           </div>
         ))}
       </div>
     </>
   );
 }
+
+interface TemplateCardsProps {
+  templates: Template[];
+}
+
+const TemplateCards = ({ templates }: TemplateCardsProps) => {
+  if (templates.length === 0) {
+    return <div>empty</div>;
+  }
+
+  return templates.map((template) => (
+    <div key={template.id} className="card flex-row align-items-center p-3">
+      <Icon src={`/repo-assets/${template.id}/logo.png`} alt={template.name || template.slug} className="me-3" />
+      <div>
+        <div>{template.name || template.slug}</div>
+        <Link to={`/box/-/add?template=${template.id}`} className="text-decoration-none">
+          <Button variant="primary">Install</Button>
+        </Link>
+      </div>
+    </div>
+  ));
+};

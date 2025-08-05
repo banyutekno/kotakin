@@ -13,7 +13,7 @@ export const Icon = ({ src, alt, size = 120, className }: IconProps) => {
 
   const getInitials = (name: string) =>
     name
-      .split(/[\s-]/)
+      .split(/[\s-/]/)
       .map((word) => word[0]?.toUpperCase())
       .join('')
       .slice(0, 2);

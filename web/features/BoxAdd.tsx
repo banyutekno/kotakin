@@ -1,7 +1,7 @@
 import { useEffect, useState } from 'react';
 import { Button, FormLabel } from 'react-bootstrap';
 import { useForm, type SubmitHandler } from 'react-hook-form';
-import { Link, useSearchParams } from 'react-router-dom';
+import { useSearchParams } from 'react-router-dom';
 import { getTemplate } from '../services/template';
 import { addBox } from '../services/box';
 import { useNav } from '../hooks/nav';
@@ -37,27 +37,37 @@ export default function BoxAdd() {
   useEffect(() => {
     const abortController = new AbortController();
 
+    const abort = () => {
+      abortController.abort();
+    };
+
     document.title = 'Add Box | Kotakin';
 
     const loadTemplate = async () => {
-      if (!templateId) return;
+      if (!templateId) {
+        return;
+      }
 
       try {
         const template = await getTemplate(templateId, abortController.signal);
         setTemplate(template);
       } catch (err) {
-        if (err instanceof DOMException && err.name === 'AbortError') return;
+        if (err instanceof DOMException && err.name === 'AbortError') {
+          return;
+        }
         throw err;
       }
     };
 
     loadTemplate();
 
-    return () => abortController.abort();
+    return abort;
   }, [templateId]);
 
   const onSubmit: SubmitHandler<FormValues> = async (values) => {
-    if (!template) throw new Error('template not ready');
+    if (!template) {
+      throw new Error('template not ready');
+    }
 
     const env = Object.fromEntries(Object.entries(values.env).filter(([_, value]) => value !== ''));
 

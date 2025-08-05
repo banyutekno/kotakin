@@ -139,7 +139,7 @@ export default function TemplateList() {
                 Update
               </Button>
 
-              <Button variant="danger" onClick={() => handleRemove(repo.id)}>
+              <Button className="me-2" variant="danger" onClick={() => handleRemove(repo.id)}>
                 <i className="bi bi-trash me-1" />
                 Remove
               </Button>

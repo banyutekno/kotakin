@@ -133,13 +133,13 @@ export default function TemplateList() {
               </div>
             </div>
 
-            <div className="mb-3">
+            <div className="d-flex gap-2 mb-3">
               <Button onClick={() => handleUpdate(repo.id)}>
                 <i className="bi bi-arrow-repeat me-1" />
                 Update
               </Button>
 
-              <Button onClick={() => handleRemove(repo.id)}>
+              <Button variant="danger" onClick={() => handleRemove(repo.id)}>
                 <i className="bi bi-trash me-1" />
                 Remove
               </Button>

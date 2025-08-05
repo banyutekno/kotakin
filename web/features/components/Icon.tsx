@@ -31,7 +31,7 @@ export const Icon = ({ src, alt, size = 120, className }: IconProps) => {
       }}
     >
       {!hasError ? (
-        <img src={src} alt={alt} className="w-full h-full object-cover" onError={() => setHasError(true)} />
+        <img src={src} alt={alt} className="w-100 object-cover" onError={() => setHasError(true)} />
       ) : (
         <span>{getInitials(alt)}</span>
       )}

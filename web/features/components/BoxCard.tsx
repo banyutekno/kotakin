@@ -73,7 +73,7 @@ export function BoxCard({ box, onActionComplete }: BoxCardProps) {
     <div className="text-light p-3 rounded shadow-sm mb-3 border p-2 m-2">
       <div className="d-flex justify-content-between align-items-center mb-2">
         <div className="d-flex align-items-center">
-          <strong>{box.name ?? resolveName(box.id)}</strong>
+          <h4>{box.name ?? resolveName(box.id)}</h4>
         </div>
         <Badge bg={badgeVariant(box.state)} className="text-capitalize">
           {box.state}

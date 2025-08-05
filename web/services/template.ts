@@ -1,6 +1,6 @@
 import { HttpError } from './error';
 
-export const getTemplates = async (signal: AbortSignal) => {
+export const getTemplates = async (signal?: AbortSignal) => {
   const resp = await fetch('/api/template', {
     signal,
   });

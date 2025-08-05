@@ -1,8 +1,9 @@
 import { useForm, type SubmitHandler } from 'react-hook-form';
-import { useNavigate, Link } from 'react-router-dom';
+import { useNavigate } from 'react-router-dom';
 import { Button, FormLabel } from 'react-bootstrap';
 import { addRepo } from '../services/repo';
 import { useNav } from '../hooks/nav';
+import { useEffect } from 'react';
 
 interface FormValues {
   url: string;
@@ -15,24 +16,36 @@ export default function RepoAdd() {
     formState: { errors },
   } = useForm<FormValues>();
 
-  const navigate = useNavigate();
   const { popPage } = useNav();
 
   const onSubmit: SubmitHandler<FormValues> = async (values) => {
     await addRepo(values.url);
-    navigate('/store');
+    popPage('/store');
   };
 
-  return (
-    <div className="container py-5">
-      <div className="column-bg card rounded-4 px-4 py-4">
-        <form onSubmit={handleSubmit(onSubmit)}>
-          <div className="d-flex justify-content-between align-items-center mb-2">
-            <h2 className="mb-4">
-              <i className="bi bi-plus-circle" /> Add Repository
-            </h2>
-          </div>
+  useEffect(() => {
+    document.title = 'Add Repository | Kotakin';
+  }, []);
 
+  return (
+    <>
+      <nav className="navbar">
+        <div className="container-fluid">
+          <div className="row w-100 g-0">
+            <div className="col-6 col-md-3 text-start order-1 order-md-1">
+              <div className="d-flex align-items-center">
+                <Button onClick={() => popPage('/')} variant="link" className="text-body">
+                  <i className="bi bi-arrow-left" />
+                </Button>
+                <span>Add Repository</span>
+              </div>
+            </div>
+          </div>
+        </div>
+      </nav>
+
+      <div className="container-fluid">
+        <form onSubmit={handleSubmit(onSubmit)}>
           <div className="mb-3">
             <FormLabel>Repository URL</FormLabel>
             <input
@@ -44,21 +57,14 @@ export default function RepoAdd() {
             {errors.url && <div className="invalid-feedback">{errors.url.message}</div>}
           </div>
 
-          <div className="mt-4 d-grid gap-2">
-            <Button type="submit" variant="primary" className="w-100">
+          <div className="mb-3">
+            <Button type="submit" variant="primary">
               <i className="bi bi-plus" />
               Add Repository
             </Button>
-
-            <Link to="/store">
-              <Button type="button" variant="danger" className="w-100" onClick={() => popPage('/store')}>
-                <i className="bi bi-x" />
-                Cancel
-              </Button>
-            </Link>
           </div>
         </form>
       </div>
-    </div>
+    </>
   );
 }

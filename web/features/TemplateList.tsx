@@ -1,12 +1,14 @@
 import { Link } from 'react-router-dom';
 import { Button } from 'react-bootstrap';
-import { useEffect, useState } from 'react';
+import { useCallback, useEffect, useState } from 'react';
 import { getTemplates } from '../services/template';
 import { useNav } from '../hooks/nav';
 import { Search } from './components/Search';
 import { Icon } from './components/Icon';
-import { getRepos } from '../services/repo';
+import { getRepos, removeRepo, updateRepo } from '../services/repo';
 import { resolveName } from '../helpers/resolveName';
+import { useToast } from '../contexts/ToastProvider';
+import { BProgress } from '@bprogress/core';
 
 interface Template {
   id: string;
@@ -18,15 +20,55 @@ interface Template {
 interface Repo {
   id: string;
   name: string;
+  url?: string;
   maintainer?: string;
 }
 
 export default function TemplateList() {
+  const { showToast } = useToast();
   const { popPage } = useNav();
   const [search, setSearch] = useState('');
   const [allTemplates, setAllTemplates] = useState<Template[]>([]);
   const [filteredTemplates, setFilteredTemplates] = useState<Template[]>([]);
   const [repos, setRepos] = useState<Repo[]>([]);
+
+  const loadAll = useCallback(async (signal?: AbortSignal) => {
+    try {
+      const repos = await getRepos(signal);
+      const templates = await getTemplates(signal);
+      setRepos(repos);
+      setAllTemplates(templates);
+    } catch (err) {
+      if (err instanceof DOMException && err.name === 'AbortError') {
+        return;
+      }
+      throw err;
+    }
+  }, []);
+
+  const handleUpdate = async (id: string) => {
+    BProgress.start();
+    try {
+      await updateRepo(id);
+      await loadAll();
+    } catch (err) {
+      showToast(`Failed to update, ${err}`);
+    } finally {
+      BProgress.done();
+    }
+  };
+
+  const handleRemove = async (id: string) => {
+    BProgress.start();
+    try {
+      await removeRepo(id);
+      await loadAll();
+    } catch (err) {
+      showToast(`Failed to remove, ${err}`);
+    } finally {
+      BProgress.done();
+    }
+  };
 
   useEffect(() => {
     const abortController = new AbortController();
@@ -36,44 +78,21 @@ export default function TemplateList() {
 
     document.title = 'Templates | Kotakin';
 
-    const loadRepos = async () => {
-      try {
-        const repos = await getRepos(abortController.signal);
-        setRepos(repos);
-      } catch (err) {
-        if (err instanceof DOMException && err.name === 'AbortError') {
-          return;
-        }
-        throw err;
-      }
-    };
-
-    const loadTemplates = async () => {
-      try {
-        const templates = await getTemplates(abortController.signal);
-        setAllTemplates(templates);
-      } catch (err) {
-        if (err instanceof DOMException && err.name === 'AbortError') {
-          return;
-        }
-        throw err;
-      }
-    };
-
-    loadRepos();
-    loadTemplates();
-
+    loadAll(abortController.signal);
     return abort;
-  }, []);
+  }, [loadAll]);
 
   useEffect(() => {
     const templates = allTemplates.filter((template) => {
-      return template.id.includes(search) || template.name?.includes(search);
+      return template.slug.includes(search) || template.name?.includes(search);
     });
     setFilteredTemplates(templates);
   }, [search, allTemplates]);
 
-  const repoTemplates = (repoId: string) => filteredTemplates.filter((template) => template.repo === repoId);
+  const repoTemplates = useCallback(
+    (repoId: string) => filteredTemplates.filter((template) => template.repo === repoId),
+    [filteredTemplates],
+  );
 
   return (
     <>
@@ -104,8 +123,26 @@ export default function TemplateList() {
 
       <div className="container-fluid">
         {repos.map((repo) => (
-          <div key={repo.id} className="mb-4">
-            <h4>{repo.name || resolveName(repo.id)}</h4>
+          <div key={repo.id} className="mb-4 border rounded p-3">
+            <div className="mb-3">
+              <h4>{repo.name || resolveName(repo.id)}</h4>
+              <div className="small text-muted">
+                {repo.url} {repo.maintainer}
+              </div>
+            </div>
+
+            <div className="mb-3">
+              <Button onClick={() => handleUpdate(repo.id)}>
+                <i className="bi bi-arrow-repeat me-1" />
+                Update
+              </Button>
+
+              <Button onClick={() => handleRemove(repo.id)}>
+                <i className="bi bi-trash me-1" />
+                Remove
+              </Button>
+            </div>
+
             <div className="d-flex flex-column gap-3">
               <TemplateCards templates={repoTemplates(repo.id)} />
             </div>
@@ -122,7 +159,7 @@ interface TemplateCardsProps {
 
 const TemplateCards = ({ templates }: TemplateCardsProps) => {
   if (templates.length === 0) {
-    return <div>empty</div>;
+    return <div className="fst-italic border rounded p-3">no template</div>;
   }
 
   return templates.map((template) => (
@@ -131,7 +168,10 @@ const TemplateCards = ({ templates }: TemplateCardsProps) => {
       <div>
         <div>{template.name || template.slug}</div>
         <Link to={`/box/-/add?template=${template.id}`} className="text-decoration-none">
-          <Button variant="primary">Install</Button>
+          <Button variant="primary">
+            <i className="bi bi-plus me-1" />
+            Install
+          </Button>
         </Link>
       </div>
     </div>

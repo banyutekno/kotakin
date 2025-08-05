@@ -2,6 +2,7 @@ package repo
 
 import (
 	"os"
+	"strings"
 
 	"github.com/banyutekno/kotakin/pkg/utils"
 )
@@ -20,6 +21,14 @@ func (s *Service) List() ([]*Repo, error) {
 	repos := []*Repo{}
 
 	for _, entry := range entries {
+		if !entry.IsDir() {
+			continue
+		}
+
+		if strings.HasPrefix(entry.Name(), ".") {
+			continue
+		}
+
 		repo, err := s.Read(entry.Name())
 		if err != nil {
 			return nil, err

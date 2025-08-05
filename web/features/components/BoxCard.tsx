@@ -56,7 +56,7 @@ export function BoxCard({ box, onActionComplete }: BoxCardProps) {
       onActionComplete();
     } catch (err) {
       if (err instanceof Error) {
-        showToast(`Failed to remove box, ${err.message}`);
+        showToast(`Failed to remove box, ${err.message}`, { variant: 'danger' });
       }
     } finally {
       BProgress.done();

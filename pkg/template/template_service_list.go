@@ -3,6 +3,7 @@ package template
 import (
 	"os"
 	"path/filepath"
+	"strings"
 
 	"github.com/banyutekno/kotakin/pkg/utils"
 )
@@ -25,6 +26,10 @@ func (s *Service) List() ([]*Template, error) {
 			continue
 		}
 
+		if strings.HasPrefix(repoFile.Name(), ".") {
+			continue
+		}
+
 		repoDir := filepath.Join(rootDir, repoFile.Name())
 		templateFiles, err := os.ReadDir(repoDir)
 		if err != nil {
@@ -33,6 +38,10 @@ func (s *Service) List() ([]*Template, error) {
 
 		for _, templateFile := range templateFiles {
 			if !templateFile.IsDir() {
+				continue
+			}
+
+			if strings.HasPrefix(templateFile.Name(), ".") {
 				continue
 			}
 

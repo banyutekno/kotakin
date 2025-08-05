@@ -3,11 +3,11 @@
   --hover-soft-dark:#2A3A4F;
 }
 
-.nav-bg{
+.navbar {
   background-color: var(--brand-dark);
-
+  border-bottom: 1px solid var(--bs-border-color) !important;
+  margin-bottom: 1rem;
 }
-
 
 .back-btn {
   width: 4rem;

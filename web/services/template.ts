@@ -12,8 +12,10 @@ export const getTemplates = async () => {
   return body;
 };
 
-export const getTemplate = async (id: string) => {
-  const resp = await fetch(`/api/template/${id}`);
+export const getTemplate = async (id: string, signal: AbortSignal) => {
+  const resp = await fetch(`/api/template/${id}`, {
+    signal,
+  });
 
   const body = await resp.json();
 

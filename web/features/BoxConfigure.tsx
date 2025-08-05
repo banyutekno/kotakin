@@ -1,9 +1,9 @@
 import { useEffect, useState } from 'react';
 import { Button, FormLabel } from 'react-bootstrap';
 import { useForm, type SubmitHandler } from 'react-hook-form';
-import { useSearchParams } from 'react-router-dom';
+import { useParams } from 'react-router-dom';
 import { getTemplate } from '../services/template';
-import { addBox } from '../services/box';
+import { configureBox, getBox } from '../services/box';
 import { useNav } from '../hooks/nav';
 
 interface FormValues {
@@ -23,15 +23,15 @@ interface Template {
   env_configs: EnvConfig[];
 }
 
-export default function BoxAdd() {
+export default function BoxConfigure() {
   const {
     register,
     handleSubmit,
+    reset,
     formState: { errors },
   } = useForm<FormValues>();
   const { popPage } = useNav();
-  const [searchParams] = useSearchParams();
-  const templateId = searchParams.get('template');
+  const { id } = useParams();
   const [template, setTemplate] = useState<Template>();
 
   useEffect(() => {
@@ -40,14 +40,22 @@ export default function BoxAdd() {
       abortController.abort();
     };
 
-    document.title = 'Add Box | Kotakin';
+    document.title = 'Configure Box | Kotakin';
 
-    const loadTemplate = async () => {
-      if (!templateId) return;
+    const loadBoxAndTemplate = async () => {
+      if (!id) return;
 
       try {
-        const template = await getTemplate(templateId, abortController.signal);
-        setTemplate(template);
+        const box = await getBox(id, abortController.signal);
+        reset({
+          name: box.name,
+          env: { ...box.env },
+        });
+
+        if (box.template) {
+          const template = await getTemplate(box.template, abortController.signal);
+          setTemplate(template);
+        }
       } catch (err) {
         if (err instanceof DOMException && err.name === 'AbortError') {
           return;
@@ -56,45 +64,47 @@ export default function BoxAdd() {
       }
     };
 
-    loadTemplate();
+    loadBoxAndTemplate();
 
     return abort;
-  }, [templateId]);
+  }, [id, reset]);
 
   const onSubmit: SubmitHandler<FormValues> = async (values) => {
-    if (!template) {
-      throw new Error('template not ready');
+    if (!id) {
+      throw new Error('undefined id');
     }
 
+    const name = values.name;
     const env = Object.fromEntries(Object.entries(values.env).filter(([_, value]) => value !== ''));
 
-    await addBox({
-      template: template.id,
-      name: values.name,
-      env,
-    });
+    await configureBox(id, { name, env });
 
     popPage('/');
   };
 
   return (
-    <div className="container py-5">
-      <div className="column-bg card rounded-4 px-4 py-4">
+    <>
+      <nav className="navbar">
+        <div className="container-fluid">
+          <div className="row w-100 g-0">
+            <div className="col-6 col-md-3 text-start order-1 order-md-1">
+              <div className="d-flex align-items-center">
+                <Button onClick={() => popPage('/')} variant="link" className="text-body">
+                  <i className="bi bi-arrow-left" />
+                </Button>
+                <span>Configure Box</span>
+              </div>
+            </div>
+          </div>
+        </div>
+      </nav>
+
+      <div className="container-fluid">
         <form onSubmit={handleSubmit(onSubmit)}>
-          <div className="d-flex justify-content-between align-items-center mb-2">
-            <h2 className="mb-4">
-              <i className="bi bi-box" /> Add New Box
-            </h2>
-
-            <Button variant="secondary" onClick={() => popPage('/')}>
-              <i className="bi bi-arrow-left-short fs-5" />
-              Back
-            </Button>
-          </div>
-
           <div className="mb-3 text-muted small">
-            <strong>Template ID:</strong> {template?.id ?? '(unavailable)'}
+            <strong>Box ID:</strong> {id}
           </div>
+
           <div className="mb-3">
             <FormLabel>Name</FormLabel>
             <input
@@ -105,6 +115,7 @@ export default function BoxAdd() {
             />
             {errors.name && <div className="invalid-feedback">{errors.name.message}</div>}
           </div>
+
           <div>
             {(template?.env_configs ?? []).map((envConfig) => (
               <div key={envConfig.name} className="mb-3">
@@ -123,20 +134,15 @@ export default function BoxAdd() {
               </div>
             ))}
           </div>
-          <div className="mt-4">
-            <Button type="submit" variant="primary" className="w-100 mb-2">
-              <i className="bi bi-plus " />
-              Add Box
+
+          <div className="mb-3">
+            <Button type="submit" variant="primary">
+              <i className="bi bi-gear me-2" />
+              Configure Box
             </Button>
-            <Link to="/store" className="text-decoration-none text-reset">
-              <Button variant="danger" className="w-100">
-                <i className="bi bi-x " />
-                Cancel
-              </Button>
-            </Link>
           </div>
         </form>
       </div>
-    </div>
+    </>
   );
 }

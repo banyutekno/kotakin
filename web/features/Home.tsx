@@ -27,15 +27,6 @@ export default function Home() {
     setBoxes(boxes);
   }, [allBoxes, search]);
 
-  // if (boxes.length === 0) {
-  //   return (
-  //     <div className="text-center py-5">
-  //       <i className="bi bi-box-seam display-1 text-muted" />
-  //       <p className="mt-3 text-muted">No boxes available.</p>
-  //     </div>
-  //   );
-  // }
-
   return (
     <>
       <nav className="navbar">

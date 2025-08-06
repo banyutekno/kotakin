@@ -9,6 +9,8 @@ import { Icon } from './Icon';
 
 interface BoxCardProps {
   box: Box;
+  isPinned: boolean;
+  onActionPin: (id: string) => void;
   onActionComplete: () => void;
 }
 
@@ -23,7 +25,7 @@ function badgeVariant(state: string) {
   }
 }
 
-export function BoxCard({ box, onActionComplete }: BoxCardProps) {
+export function BoxCard({ box, isPinned, onActionPin, onActionComplete }: BoxCardProps) {
   const { showToast } = useToast();
 
   const handleStart = async () => {
@@ -73,6 +75,9 @@ export function BoxCard({ box, onActionComplete }: BoxCardProps) {
           <div className="d-flex justify-content-between align-items-center mb-2">
             <div className="d-flex align-items-center">
               <h4>{box.name ?? resolveName(box.id)}</h4>
+              <Button variant="outline-light" className="ms-2" size="sm" onClick={() => onActionPin(box.id)}>
+                {isPinned ? <i className="bi bi-pin" /> : <i className="bi bi-pin-fill" />}
+              </Button>
             </div>
             <Badge bg={badgeVariant(box.state)} className="text-capitalize">
               {box.state}

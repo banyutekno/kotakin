@@ -10,6 +10,7 @@ export default function Home() {
   const [allBoxes, setAllBoxes] = useState<Box[]>([]);
   const [boxes, setBoxes] = useState<Box[]>([]);
   const [search, setSearch] = useState('');
+  const [pinned, setPinned] = useState<string[]>([]);
 
   const loadBoxes = useCallback(async () => {
     const boxes = await getBoxes();
@@ -26,6 +27,17 @@ export default function Home() {
     const boxes = allBoxes.filter((box) => box.id.includes(search) || box.name?.includes(search));
     setBoxes(boxes);
   }, [allBoxes, search]);
+
+  const handlePin = (id: string) => {
+    setPinned((pin) => (pin.includes(id) ? pin.filter((pid) => pid !== id) : [...pin, id]));
+  };
+
+  useEffect(() => {
+    localStorage.setItem('pinned', JSON.stringify(pinned));
+  }, [pinned]);
+
+  const pinnedBoxes = boxes.filter((box) => pinned.includes(box.id));
+  const unpinnedBoxes = boxes.filter((box) => !pinned.includes(box.id));
 
   return (
     <>
@@ -55,16 +67,25 @@ export default function Home() {
         </div>
       </nav>
 
-      <div>
-        {boxes.length === 0 && (
-          <div className="text-center py-5">
-            <i className="bi bi-box display-1 text-muted" />
-            <p className="mt-3 text-muted">No boxes available.</p>
-          </div>
-        )}
+      {boxes.length === 0 && (
+        <div className="text-center py-5">
+          <i className="bi bi-box display-1 text-muted" />
+          <p className="mt-3 text-muted">No boxes available.</p>
+        </div>
+      )}
 
-        {boxes.map((box) => (
-          <BoxCard key={box.id} box={box} onActionComplete={loadBoxes} />
+      <div className="flex-column">
+        {pinnedBoxes.length > 0 && (
+          <>
+            <h5 className="mb-2 ms-3">Pinned</h5>
+            {pinnedBoxes.map((box) => (
+              <BoxCard key={box.id} box={box} isPinned={true} onActionPin={handlePin} onActionComplete={loadBoxes} />
+            ))}
+            <hr />
+          </>
+        )}
+        {unpinnedBoxes.map((box) => (
+          <BoxCard key={box.id} box={box} isPinned={false} onActionPin={handlePin} onActionComplete={loadBoxes} />
         ))}
       </div>
     </>

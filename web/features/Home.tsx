@@ -67,6 +67,13 @@ export default function Home() {
         </div>
       </nav>
 
+      {boxes.length === 0 && (
+        <div className="text-center py-5">
+          <i className="bi bi-box display-1 text-muted" />
+          <p className="mt-3 text-muted">No boxes available.</p>
+        </div>
+      )}
+
       <div className="flex-column">
         {pinnedBoxes.length > 0 && (
           <>

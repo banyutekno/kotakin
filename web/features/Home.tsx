@@ -55,11 +55,9 @@ export default function Home() {
         </div>
       </nav>
 
-      <div>
-        {boxes.map((box) => (
-          <BoxCard key={box.id} box={box} onActionComplete={loadBoxes} />
-        ))}
-      </div>
+      {boxes.map((box) => (
+        <BoxCard key={box.id} box={box} onActionComplete={loadBoxes} />
+      ))}
     </>
   );
 }

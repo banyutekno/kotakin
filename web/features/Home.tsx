@@ -84,6 +84,7 @@ export default function Home() {
             <hr />
           </>
         )}
+        <h5 className="mb-2 ms-3">All Applications</h5>
         {unpinnedBoxes.map((box) => (
           <BoxCard key={box.id} box={box} isPinned={false} onActionPin={handlePin} onActionComplete={loadBoxes} />
         ))}

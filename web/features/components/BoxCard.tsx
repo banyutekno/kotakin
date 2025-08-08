@@ -1,4 +1,5 @@
-import { Badge, Button } from 'react-bootstrap';
+import { Badge, Button, Spinner } from 'react-bootstrap';
+import { useState } from 'react';
 import { BProgress } from '@bprogress/core';
 import { startBox, stopBox, removeBox } from '../../services/box';
 import { resolveName } from '../../helpers/resolveName';
@@ -26,27 +27,28 @@ function badgeVariant(state: string) {
 }
 
 export function BoxCard({ box, isPinned, onActionPin, onActionComplete }: BoxCardProps) {
+  const [loading, setLoading] = useState<'start' | 'stop' | null>(null);
   const { showToast } = useToast();
 
   const handleStart = async () => {
-    BProgress.start();
+    setLoading('start');
     try {
       await startBox(box.id);
       showToast('Box started', { variant: 'success' });
       onActionComplete();
     } finally {
-      BProgress.done();
+      setLoading(null);
     }
   };
 
   const handleStop = async () => {
-    BProgress.start();
+    setLoading('stop');
     try {
       await stopBox(box.id);
       showToast('Box stopped', { variant: 'danger' });
       onActionComplete();
     } finally {
-      BProgress.done();
+      setLoading(null);
     }
   };
 
@@ -90,13 +92,21 @@ export function BoxCard({ box, isPinned, onActionPin, onActionComplete }: BoxCar
 
           <div className="d-flex align-items-center">
             <div className="d-flex gap-2">
-              <Button variant="outline-light" size="sm" onClick={handleStart}>
-                <i className="bi bi-play-fill me-1" />
-                Start
+              <Button variant="outline-light" size="sm" onClick={handleStart} disabled={!!loading}>
+                {loading === 'start' ? (
+                  <Spinner as="span" animation="border" size="sm" role="status" aria-hidden="true" />
+                ) : (
+                  <i className="bi bi-play-fill" />
+                )}
+                <span className="ms-1">Start</span>
               </Button>
-              <Button variant="outline-light" size="sm" onClick={handleStop}>
-                <i className="bi bi-stop-fill me-1" />
-                Stop
+              <Button variant="outline-light" size="sm" onClick={handleStop} disabled={!!loading}>
+                {loading === 'stop' ? (
+                  <Spinner as="span" animation="border" size="sm" role="status" aria-hidden="true" />
+                ) : (
+                  <i className="bi bi-stop-fill" />
+                )}
+                <span className="ms-1">Stop</span>
               </Button>
               <Link to={`/box/${box.id}/configure`}>
                 <Button variant="outline-light" size="sm">

@@ -7,6 +7,7 @@ import { useToast } from '../../contexts/ToastProvider';
 import { Link } from 'react-router-dom';
 import type { Box } from '../types';
 import { Icon } from './Icon';
+import { RemoveModal } from './RemoveModal';
 
 interface BoxCardProps {
   box: Box;
@@ -28,7 +29,9 @@ function badgeVariant(state: string) {
 
 export function BoxCard({ box, isPinned, onActionPin, onActionComplete }: BoxCardProps) {
   const [loading, setLoading] = useState<'start' | 'stop' | null>(null);
+    const [showRemoveModal, setShowRemoveModal] = useState(false);
   const { showToast } = useToast();
+
 
   const handleStart = async () => {
     setLoading('start');
@@ -53,6 +56,7 @@ export function BoxCard({ box, isPinned, onActionPin, onActionComplete }: BoxCar
   };
 
   const handleRemove = async () => {
+    setShowRemoveModal(false);
     BProgress.start();
     try {
       await removeBox(box.id);
@@ -68,11 +72,13 @@ export function BoxCard({ box, isPinned, onActionPin, onActionComplete }: BoxCar
   };
 
   return (
+  <>
     <div className="rounded border p-3 m-3 mb-3">
       <div className="d-flex justify-content-between align-items-start">
         <div className="me-3">
           <Icon src={box.template ? `/repo-assets/${box.template}/logo.png` : ''} alt={box.name || box.id} />
         </div>
+
         <div className="flex-grow-1">
           <div className="d-flex justify-content-between align-items-center mb-2">
             <div className="d-flex align-items-center">
@@ -100,6 +106,7 @@ export function BoxCard({ box, isPinned, onActionPin, onActionComplete }: BoxCar
                 )}
                 <span className="ms-1">Start</span>
               </Button>
+
               <Button variant="outline-light" size="sm" onClick={handleStop} disabled={!!loading}>
                 {loading === 'stop' ? (
                   <Spinner as="span" animation="border" size="sm" role="status" aria-hidden="true" />
@@ -108,6 +115,7 @@ export function BoxCard({ box, isPinned, onActionPin, onActionComplete }: BoxCar
                 )}
                 <span className="ms-1">Stop</span>
               </Button>
+
               <Link to={`/box/${box.id}/configure`}>
                 <Button variant="outline-light" size="sm">
                   <i className="bi bi-gear-fill me-1" />
@@ -115,12 +123,21 @@ export function BoxCard({ box, isPinned, onActionPin, onActionComplete }: BoxCar
                 </Button>
               </Link>
             </div>
-            <Button variant="danger" size="sm" className="ms-auto" onClick={handleRemove}>
+
+            <Button variant="danger" size="sm" className="ms-auto" onClick={() => setShowRemoveModal(true)}>
               <i className="bi bi-trash-fill" />
             </Button>
           </div>
         </div>
       </div>
     </div>
-  );
-}
+
+    <RemoveModal
+      itemName={box.id}
+      show={showRemoveModal}
+      onHide={() => setShowRemoveModal(false)}
+      onConfirm={handleRemove}
+    />
+  </>
+);
+

@@ -80,14 +80,18 @@ export default function Home() {
       <div className="flex-column">
         {pinnedBoxes.length > 0 && (
           <>
-            <h5 className="mb-2 ms-3">Pinned</h5>
+            <div className="mb-2 ms-3">
+              <h5>Pinned</h5>
+            </div>
             {pinnedBoxes.map((box) => (
               <BoxCard key={box.id} box={box} isPinned={true} onActionPin={handlePin} onActionComplete={loadBoxes} />
             ))}
             <hr />
           </>
         )}
-        <h5 className="mb-2 ms-3">All Applications</h5>
+        <div className="mb-2 ms-3">
+          <h5>All Applications</h5>
+        </div>
         {unpinnedBoxes.map((box) => (
           <BoxCard key={box.id} box={box} isPinned={false} onActionPin={handlePin} onActionComplete={loadBoxes} />
         ))}

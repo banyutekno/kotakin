@@ -1,6 +1,7 @@
 package main
 
 import (
+	"context"
 	"fmt"
 	"log"
 	"net/http"
@@ -12,6 +13,7 @@ import (
 
 	"github.com/banyutekno/kotakin/internal/server"
 	"github.com/banyutekno/kotakin/pkg/config"
+	"github.com/banyutekno/kotakin/pkg/docker"
 )
 
 func main() {
@@ -21,6 +23,8 @@ func main() {
 		handleError(err)
 		return
 	}
+
+	docker.NetworkCreate(context.Background(), conf.Network)
 
 	r := chi.NewRouter()
 	r.Use(middleware.Logger)

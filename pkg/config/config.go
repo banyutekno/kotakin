@@ -7,6 +7,7 @@ import (
 
 type Config struct {
 	DataDir string `json:"data_dir"`
+	Network string `json:"network"`
 }
 
 func (c *Config) RepoDir(id string) string {
@@ -43,6 +44,7 @@ func WithDataDir(dataDir string) (*Config, error) {
 
 	config := &Config{
 		DataDir: dataDir,
+		Network: "kotakin_net",
 	}
 	return config, nil
 }

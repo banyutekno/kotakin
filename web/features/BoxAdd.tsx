@@ -29,7 +29,7 @@ export default function BoxAdd() {
     handleSubmit,
     formState: { errors },
   } = useForm<FormValues>();
-  const { popPage } = useNav();
+  const { popPage, pushPage } = useNav();
   const [searchParams] = useSearchParams();
   const templateId = searchParams.get('template');
   const [template, setTemplate] = useState<Template>();
@@ -77,7 +77,7 @@ export default function BoxAdd() {
       env,
     });
 
-    popPage('/');
+    pushPage('/');
   };
 
   return (

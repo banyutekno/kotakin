@@ -10,7 +10,10 @@ export default function Home() {
   const [allBoxes, setAllBoxes] = useState<Box[]>([]);
   const [boxes, setBoxes] = useState<Box[]>([]);
   const [search, setSearch] = useState('');
-  const [pinned, setPinned] = useState<string[]>([]);
+  const [pinned, setPinned] = useState<string[]>(() => {
+    const saved = localStorage.getItem('pinned');
+    return saved ? JSON.parse(saved) : [];
+  });
 
   const loadBoxes = useCallback(async () => {
     const boxes = await getBoxes();

@@ -9,6 +9,7 @@ import { getRepos, removeRepo, updateRepo } from '../services/repo';
 import { resolveName } from '../helpers/resolveName';
 import { useToast } from '../contexts/ToastProvider';
 import { BProgress } from '@bprogress/core';
+import { RemoveModal } from './components/RemoveModal';
 
 interface Template {
   id: string;
@@ -31,6 +32,7 @@ export default function TemplateList() {
   const [allTemplates, setAllTemplates] = useState<Template[]>([]);
   const [filteredTemplates, setFilteredTemplates] = useState<Template[]>([]);
   const [repos, setRepos] = useState<Repo[]>([]);
+  const [showRemoveModal, setShowRemoveModal] = useState<Repo | null>(null);
 
   const loadAll = useCallback(async (signal?: AbortSignal) => {
     try {
@@ -59,16 +61,20 @@ export default function TemplateList() {
     }
   };
 
-  const handleRemove = async (id: string) => {
+  const handleRemove = async () => {
+    if (!showRemoveModal) {
+      return;
+    }
     BProgress.start();
     try {
-      await removeRepo(id);
+      await removeRepo(showRemoveModal.id);
       showToast('Repository removed');
       await loadAll();
     } catch (err) {
       showToast(`Failed to remove, ${err}`);
     } finally {
       BProgress.done();
+      setShowRemoveModal(null);
     }
   };
 
@@ -139,7 +145,7 @@ export default function TemplateList() {
                 Update
               </Button>
 
-              <Button className="me-2" variant="danger" onClick={() => handleRemove(repo.id)}>
+              <Button className="me-2" variant="danger" onClick={() => setShowRemoveModal(repo)}>
                 <i className="bi bi-trash me-1" />
                 Remove
               </Button>
@@ -151,6 +157,12 @@ export default function TemplateList() {
           </div>
         ))}
       </div>
+      <RemoveModal
+        itemName={showRemoveModal?.name ?? resolveName(showRemoveModal?.id ?? '')}
+        show={!!showRemoveModal}
+        onHide={() => setShowRemoveModal(null)}
+        onConfirm={handleRemove}
+      />
     </>
   );
 }

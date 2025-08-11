@@ -126,7 +126,7 @@ export default function BoxConfigure() {
                   type="text"
                   className={`form-control ${errors.env?.[envConfig.name] ? 'is-invalid' : ''}`}
                   placeholder={`Enter ${envConfig.label.toLowerCase()}`}
-                  {...register(`env.${envConfig.name}`)}
+                  {...register(`env.${envConfig.name}`, { required: 'Application port is required' })}
                 />
                 {errors.env?.[envConfig.name] && (
                   <div className="invalid-feedback">{errors.env?.[envConfig.name]?.message}</div>

@@ -4,4 +4,5 @@ export interface Box {
   kind: string;
   template: string;
   state: string;
+  env: Record<string, string>;
 }

@@ -105,6 +105,9 @@ export function BoxCard({ box, isPinned, onActionPin, onActionComplete }: BoxCar
               {box.template ?? '(unmanaged)'} | {box.kind}
               <p>
                 Port: <strong>{boxPort}</strong>
+                <a href={`http://localhost:${boxPort}`} className="ms-1" target="_blank" rel="noopener noreferrer">
+                  <i className="bi bi-box-arrow-up-right" />
+                </a>
               </p>
             </div>
 

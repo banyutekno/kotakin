@@ -32,6 +32,16 @@ export function BoxCard({ box, isPinned, onActionPin, onActionComplete }: BoxCar
   const [showRemoveModal, setShowRemoveModal] = useState(false);
   const { showToast } = useToast();
 
+  function getBoxPort(env: Record<string, string>) {
+    if (!env) {
+      return;
+    }
+    const port = Object.keys(env).find((p) => p.toLowerCase().includes('port'));
+    return port ? env[port] : null;
+  }
+
+  const boxPort = getBoxPort(box.env);
+
   const handleStart = async () => {
     setLoading('start');
     try {
@@ -93,6 +103,9 @@ export function BoxCard({ box, isPinned, onActionPin, onActionComplete }: BoxCar
 
             <div className="text-muted mb-3">
               {box.template ?? '(unmanaged)'} | {box.kind}
+              <p>
+                Port: <strong>{boxPort}</strong>
+              </p>
             </div>
 
             <div className="d-flex align-items-center">

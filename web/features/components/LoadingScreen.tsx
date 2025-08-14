@@ -17,7 +17,7 @@ export function LoadingScreen() {
       <div className="d-flex text-center p-4 rounded" style={{ maxWidth: '650px' }}>
         <i className="bi bi-box animate-bounce" style={{ fontSize: '5rem' }} />
         <div className="mt-4 ms-2" style={{ fontSize: '3rem' }}>
-          Kotakin....
+          Kotakin
         </div>
       </div>
     </div>

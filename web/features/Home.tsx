@@ -80,7 +80,7 @@ export default function Home() {
 
       {boxes.length === 0 && (
         <div className="text-center py-5">
-          <i className="bi bi-box display-1 text-muted" />
+          <i className="bi bi-box display-1" />
           <p className="mt-3 text-muted">No boxes available.</p>
         </div>
       )}

@@ -10,14 +10,22 @@ export default function Home() {
   const [allBoxes, setAllBoxes] = useState<Box[]>([]);
   const [boxes, setBoxes] = useState<Box[]>([]);
   const [search, setSearch] = useState('');
+  const [loadingBoxes, setLoadingBoxes] = useState(true);
   const [pinned, setPinned] = useState<string[]>(() => {
     const saved = localStorage.getItem('pinned');
     return saved ? JSON.parse(saved) : [];
   });
 
   const loadBoxes = useCallback(async () => {
-    const boxes = await getBoxes();
-    setAllBoxes(boxes);
+    setLoadingBoxes(true);
+    try {
+      const boxes = await getBoxes();
+      setAllBoxes(boxes);
+    } catch (error) {
+      throw new Error();
+    } finally {
+      setLoadingBoxes(false);
+    }
   }, []);
 
   useEffect(() => {
@@ -72,30 +80,32 @@ export default function Home() {
 
       {boxes.length === 0 && (
         <div className="text-center py-5">
-          <i className="bi bi-box display-1 text-muted" />
+          <i className="bi bi-box display-1" />
           <p className="mt-3 text-muted">No boxes available.</p>
         </div>
       )}
 
-      <div className="flex-column">
-        {pinnedBoxes.length > 0 && (
-          <>
-            <div className="mb-2 ms-3">
-              <h5>Pinned</h5>
-            </div>
-            {pinnedBoxes.map((box) => (
-              <BoxCard key={box.id} box={box} isPinned={true} onActionPin={handlePin} onActionComplete={loadBoxes} />
-            ))}
-            <hr />
-          </>
-        )}
-        <div className="mb-2 ms-3">
-          <h5>All Applications</h5>
+      {!loadingBoxes && boxes.length > 0 && (
+        <div className="flex-column">
+          {pinnedBoxes.length > 0 && (
+            <>
+              <div className="mb-2 ms-3">
+                <h5>Pinned</h5>
+              </div>
+              {pinnedBoxes.map((box) => (
+                <BoxCard key={box.id} box={box} isPinned={true} onActionPin={handlePin} onActionComplete={loadBoxes} />
+              ))}
+              <hr />
+            </>
+          )}
+          <div className="mb-2 ms-3">
+            <h5>All Applications</h5>
+          </div>
+          {unpinnedBoxes.map((box) => (
+            <BoxCard key={box.id} box={box} isPinned={false} onActionPin={handlePin} onActionComplete={loadBoxes} />
+          ))}
         </div>
-        {unpinnedBoxes.map((box) => (
-          <BoxCard key={box.id} box={box} isPinned={false} onActionPin={handlePin} onActionComplete={loadBoxes} />
-        ))}
-      </div>
+      )}
     </>
   );
 }

@@ -2,17 +2,57 @@
 <html lang="en" data-bs-theme="dark">
   <head>
     <meta charset="UTF-8" />
-    <link rel="icon" type="image/svg+xml" href="./assets/icon.svg"  />
+
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>Kotakin</title>
+    <link
+      href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css"
+      rel="stylesheet"
+    />
+
     <style>
       body {
+        margin: 0;
         background-color: #212529;
+        color: white;
+      }
+      .container {
+        height: 100vh;
+        display: flex;
+        justify-content: center;
+        align-items: center;
+      }
+      .animate-bounce {
+        animation: bounce 1.5s infinite;
+      }
+      @keyframes bounce {
+        0%, 100% {
+          transform: translateY(0);
+        }
+        50% {
+          transform: translateY(-15px);
+        }
+      }
+      svg {
+        width: 5rem;
+        height: 5rem;
+        fill: currentColor;
       }
     </style>
   </head>
   <body>
-    <div id="root"></div>
+    <div id="root">
+      <div class="container">
+        <div class="d-flex text-center p-4 rounded" style="max-width: 650px;">
+          <svg xmlns="http://www.w3.org/2000/svg" class="animate-bounce" viewBox="0 0 16 16">
+            <path d="M8.21.5a.5.5 0 0 0-.42 0l-6.5 3A.5.5 0 0 0 1 4v8a.5.5 0 0 0 .29.45l6.5 3a.5.5 0 0 0 .42 0l6.5-3A.5.5 0 0 0 15 12V4a.5.5 0 0 0-.29-.45zM8 1.067 13.5 3.5 8 5.933 2.5 3.5zM2 4.567l5.5 2.433v6.433L2 11V4.567zM8.5 13.433V7l5.5-2.433V11z"/>
+          </svg>
+          <div class="ms-2" style="font-size: 3rem;">
+            Kotakin
+          </div>
+        </div>
+      </div>
+    </div>
     <script type="module" src="./main.tsx"></script>
   </body>
 </html>

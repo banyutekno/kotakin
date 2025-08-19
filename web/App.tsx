@@ -1,7 +1,8 @@
 import { BrowserRouter, Route, Routes } from 'react-router-dom';
-import { lazy } from 'react';
+import { lazy, Suspense } from 'react';
 import { StrictMode } from 'react';
 import { ToastProvider } from './contexts/ToastProvider';
+import { LoadingScreen } from './features/components/LoadingScreen';
 
 const Home = lazy(() => import('./features/Home'));
 const TemplateList = lazy(() => import('./features/TemplateList'));
@@ -15,14 +16,16 @@ function App() {
     <StrictMode>
       <ToastProvider>
         <BrowserRouter>
-          <Routes>
-            <Route path="/" element={<Home />} />
-            <Route path="/store" element={<TemplateList />} />
-            <Route path="/repo/-/add" element={<RepoAdd />} />
-            <Route path="/box/-/add" element={<BoxAdd />} />
-            <Route path="/box/:id/configure" element={<BoxConfigure />} />
-            <Route path="/*" element={<NotFound />} />
-          </Routes>
+          <Suspense fallback={<LoadingScreen />}>
+            <Routes>
+              <Route path="/" element={<Home />} />
+              <Route path="/store" element={<TemplateList />} />
+              <Route path="/repo/-/add" element={<RepoAdd />} />
+              <Route path="/box/-/add" element={<BoxAdd />} />
+              <Route path="/box/:id/configure" element={<BoxConfigure />} />
+              <Route path="/*" element={<NotFound />} />
+            </Routes>
+          </Suspense>
         </BrowserRouter>
       </ToastProvider>
     </StrictMode>

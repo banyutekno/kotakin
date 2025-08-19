@@ -8,7 +8,6 @@ import type { Box } from './types';
 
 export default function Home() {
   const [allBoxes, setAllBoxes] = useState<Box[]>([]);
-  const [boxes, setBoxes] = useState<Box[]>([]);
   const [search, setSearch] = useState('');
   const [loadingBoxes, setLoadingBoxes] = useState(true);
   const [pinned, setPinned] = useState<string[]>(() => {
@@ -30,14 +29,8 @@ export default function Home() {
 
   useEffect(() => {
     document.title = 'Kotakin';
-
     loadBoxes();
   }, [loadBoxes]);
-
-  useEffect(() => {
-    const boxes = allBoxes.filter((box) => box.id.includes(search) || box.name?.includes(search));
-    setBoxes(boxes);
-  }, [allBoxes, search]);
 
   const handlePin = (id: string) => {
     setPinned((pin) => (pin.includes(id) ? pin.filter((pid) => pid !== id) : [...pin, id]));
@@ -47,6 +40,7 @@ export default function Home() {
     localStorage.setItem('pinned', JSON.stringify(pinned));
   }, [pinned]);
 
+  const boxes = allBoxes.filter((box) => box.id.includes(search) || box.name?.includes(search));
   const pinnedBoxes = boxes.filter((box) => pinned.includes(box.id));
   const unpinnedBoxes = boxes.filter((box) => !pinned.includes(box.id));
 
@@ -78,10 +72,16 @@ export default function Home() {
         </div>
       </nav>
 
-      {boxes.length === 0 && (
+      {!loadingBoxes && boxes.length === 0 && (
         <div className="text-center py-5">
           <i className="bi bi-box display-1" />
           <p className="mt-3 text-muted">No boxes available.</p>
+          <Link to="/store">
+            <Button variant="primary" className="mt-3">
+              <i className="bi bi-plus me-1" />
+              Add Application
+            </Button>
+          </Link>
         </div>
       )}
 

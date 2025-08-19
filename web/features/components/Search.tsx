@@ -9,6 +9,20 @@ interface SearchProps {
 export function Search({ value = '', onChange, debounceDelay = 1000 }: SearchProps) {
   const [inputValue, setInputValue] = useState(value);
   const debounceRef = useRef<NodeJS.Timeout | null>(null);
+  const inputRef = useRef<HTMLInputElement>(null);
+
+  useEffect(() => {
+    const handleKeyDown = (event: KeyboardEvent) => {
+      if (event.ctrlKey && event.key === 'k') {
+        event.preventDefault();
+        inputRef.current?.focus();
+      }
+    };
+    document.addEventListener('keydown', handleKeyDown);
+    return () => {
+      document.removeEventListener('keydown', handleKeyDown);
+    };
+  }, []);
 
   useEffect(() => {
     setInputValue(value);
@@ -48,6 +62,7 @@ export function Search({ value = '', onChange, debounceDelay = 1000 }: SearchPro
         type="text"
         className="form-control pe-5"
         placeholder="Search..."
+        ref={inputRef}
         value={inputValue}
         onChange={(e) => setInputValue(e.target.value)}
         onKeyDown={handleKeyDown}

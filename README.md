@@ -3,11 +3,6 @@
 <p align="center">
   <img src="https://raw.githubusercontent.com/banyutekno/kotakin/main/web/assets/icon.svg" alt="Kotakin Logo" width="120">
 </p>
-
-<p align="center">
-  <strong>A self-hosted, lightweight PaaS for running your applications in boxes.</strong>
-</p>
-
 ---
 
 Kotakin is a web-based manager for applications ("boxes") that are defined by templates and run as Docker containers. It provides a simple and allowing you to manage your applications from a clean web interface.

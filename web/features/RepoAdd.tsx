@@ -1,8 +1,9 @@
 import { useForm, type SubmitHandler } from 'react-hook-form';
-import { Button, FormLabel } from 'react-bootstrap';
+import { Button, FormLabel, Spinner } from 'react-bootstrap';
 import { addRepo } from '../services/repo';
 import { useNav } from '../hooks/nav';
-import { useEffect } from 'react';
+import { useEffect, useState } from 'react';
+import { useToast } from '../contexts/ToastProvider';
 
 interface FormValues {
   url: string;
@@ -16,10 +17,20 @@ export default function RepoAdd() {
   } = useForm<FormValues>();
 
   const { popPage } = useNav();
+  const { showToast } = useToast();
+  const [submit, setSubmit] = useState(false);
 
   const onSubmit: SubmitHandler<FormValues> = async (values) => {
-    await addRepo(values.url);
-    popPage('/store');
+    setSubmit(true);
+    try {
+      await addRepo(values.url);
+      showToast('Repository added successfully', { variant: 'success' });
+      popPage('/store');
+    } catch (error) {
+      showToast(`Failed to add repository: ${error}`, { variant: 'danger' });
+    } finally {
+      setSubmit(false);
+    }
   };
 
   useEffect(() => {
@@ -57,9 +68,18 @@ export default function RepoAdd() {
           </div>
 
           <div className="mb-3">
-            <Button type="submit" variant="primary">
-              <i className="bi bi-plus" />
-              Add Repository
+            <Button type="submit" variant="primary" disabled={submit}>
+              {submit ? (
+                <>
+                  <Spinner as="span" animation="border" size="sm" role="status" aria-hidden="true" />
+                  <span className="ms-2">Adding...</span>
+                </>
+              ) : (
+                <>
+                  <i className="bi bi-plus" />
+                  Add Repository
+                </>
+              )}
             </Button>
           </div>
         </form>

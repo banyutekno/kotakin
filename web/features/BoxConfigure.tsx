@@ -1,10 +1,11 @@
 import { useEffect, useState } from 'react';
-import { Button, FormLabel } from 'react-bootstrap';
+import { Button, FormLabel, Spinner } from 'react-bootstrap';
 import { useForm, type SubmitHandler } from 'react-hook-form';
 import { useParams } from 'react-router-dom';
 import { getTemplate } from '../services/template';
 import { configureBox, getBox } from '../services/box';
 import { useNav } from '../hooks/nav';
+import { useToast } from '../contexts/ToastProvider';
 
 interface FormValues {
   name: string;
@@ -28,9 +29,10 @@ export default function BoxConfigure() {
     register,
     handleSubmit,
     reset,
-    formState: { errors },
+    formState: { errors, isSubmitting },
   } = useForm<FormValues>();
   const { popPage } = useNav();
+  const { showToast } = useToast();
   const { id } = useParams();
   const [template, setTemplate] = useState<Template>();
 
@@ -77,9 +79,13 @@ export default function BoxConfigure() {
     const name = values.name;
     const env = Object.fromEntries(Object.entries(values.env).filter(([_, value]) => value !== ''));
 
-    await configureBox(id, { name, env });
-
-    popPage('/');
+    try {
+      await configureBox(id, { name, env });
+      showToast('Box configured successfully', { variant: 'success' });
+      popPage('/');
+    } catch (error) {
+      showToast(`Failed to configure Box: ${error}`, { variant: 'danger' });
+    }
   };
 
   return (
@@ -136,9 +142,18 @@ export default function BoxConfigure() {
           </div>
 
           <div className="mb-3">
-            <Button type="submit" variant="primary">
-              <i className="bi bi-gear me-2" />
-              Configure Box
+            <Button type="submit" variant="primary" disabled={isSubmitting}>
+              {isSubmitting ? (
+                <>
+                  <Spinner as="span" animation="border" size="sm" role="status" aria-hidden="true" />
+                  <span className="ms-2">Configuring...</span>
+                </>
+              ) : (
+                <>
+                  <i className="bi bi-gear me-2" />
+                  Configure Box
+                </>
+              )}
             </Button>
           </div>
         </form>
